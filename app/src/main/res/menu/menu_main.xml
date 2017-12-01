@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AlwaysShowAction">
+
+    <item
+        android:id="@+id/menu_main_connect"
+        android:icon="@drawable/ic_menu_connect"
+        android:title="@string/menu_main_connect"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_main_disconnect"
+        android:icon="@drawable/ic_menu_disconnect"
+        android:title="@string/menu_main_disconnect"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_main_export"
+        android:icon="@drawable/ic_menu_export"
+        android:title="@string/menu_main_export"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_main_reset"
+        android:title="@string/menu_main_reset"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_main_client_config"
+        android:title="@string/menu_main_client_config"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_main_sample_frequency"
+        android:title="@string/menu_main_sampling_frequency"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_main_settings"
+        android:title="@string/menu_main_settings"
+        app:showAsAction="never" />
+
+</menu>
