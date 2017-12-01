@@ -8,7 +8,7 @@ def butterknifeVersion = "8.8.1"
 def supportVersion = "26.1.0"
 def rxJavaVersion = "2.1.6"
 def rxAndroidVersion = "2.0.1"
-def emgVersion = "0.4.2"
+def emgVersion = "0.5"
 
 android {
     compileSdkVersion 26

@@ -13,7 +13,7 @@ import at.fhooe.mc.emg.core.EmgController
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
 import at.fhooe.mc.emg.core.tools.Tool
-import at.fhooe.mc.emg.core.util.Configuration
+import at.fhooe.mc.emg.core.util.config.EmgConfig
 import at.fhooe.mc.emg.core.view.EmgViewCallback
 import at.fhooe.mc.emg.core.view.VisualView
 import javax.inject.Inject
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View> {
 
     private lateinit var viewCallback: EmgViewCallback
 
-    private lateinit var config: Configuration
+    private lateinit var config: EmgConfig
 
     private lateinit var visualView: VisualView<View>
 
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View> {
         // TODO
     }
 
-    override fun setupView(viewCallback: EmgViewCallback, config: Configuration) {
+    override fun setupView(viewCallback: EmgViewCallback, config: EmgConfig) {
         this.viewCallback = viewCallback
         this.config = config
 

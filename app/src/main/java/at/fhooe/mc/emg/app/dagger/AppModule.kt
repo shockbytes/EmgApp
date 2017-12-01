@@ -3,6 +3,7 @@ package at.fhooe.mc.emg.app.dagger
 import at.fhooe.mc.emg.app.client.bluetooth.BluetoothClientDriver
 import at.fhooe.mc.emg.app.core.AndroidEmgController
 import at.fhooe.mc.emg.app.core.EmgApp
+import at.fhooe.mc.emg.app.util.SharedPreferencesEmgConfigStorage
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
 import at.fhooe.mc.emg.core.client.simulation.SimulationClientDriver
@@ -26,7 +27,8 @@ class AppModule(private val app: EmgApp) {
     @Singleton
     fun provideEmgController(clients: List<@JvmSuppressWildcards EmgClientDriver>,
                              tools: List<@JvmSuppressWildcards Tool>): AndroidEmgController {
-        return AndroidEmgController(app.applicationContext, clients, tools)
+        return AndroidEmgController(app.applicationContext, clients, tools,
+                SharedPreferencesEmgConfigStorage(app.applicationContext))
     }
 
     @Provides
