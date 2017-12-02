@@ -9,7 +9,6 @@ import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
 import at.fhooe.mc.emg.core.client.simulation.SimulationClientDriver
 import at.fhooe.mc.emg.core.tools.Tool
 import at.fhooe.mc.emg.core.tools.conconi.ConconiTool
-import at.fhooe.mc.emg.core.tools.peak.PeakDetectionTool
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -42,7 +41,9 @@ class AppModule(private val app: EmgApp) {
     @Provides
     @Singleton
     fun provideTools(): List<@JvmSuppressWildcards Tool> {
-        return arrayListOf(ConconiTool(), PeakDetectionTool())
+        return arrayListOf(ConconiTool()
+                /* This still depends on JFrame --> PeakDetectionTool() */
+                )
     }
 
     @Provides

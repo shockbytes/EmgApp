@@ -11,18 +11,21 @@ import at.fhooe.mc.emg.app.core.AndroidEmgController
 import at.fhooe.mc.emg.app.core.EmgApp
 import at.fhooe.mc.emg.app.ui.fragment.FrequencyAnalysisFragment
 import at.fhooe.mc.emg.app.ui.fragment.MainFragment
+import at.fhooe.mc.emg.app.ui.fragment.dialog.TextEnterDialogFragment
 import at.fhooe.mc.emg.app.view.AndroidEmgView
+import at.fhooe.mc.emg.app.view.OnRenderViewReadyListener
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.EmgController
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
+import at.fhooe.mc.emg.core.storage.CsvDataStorage
 import at.fhooe.mc.emg.core.tools.Tool
 import at.fhooe.mc.emg.core.util.config.EmgConfig
 import at.fhooe.mc.emg.core.view.EmgViewCallback
 import at.fhooe.mc.emg.core.view.VisualView
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), AndroidEmgView<View> {
+class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewReadyListener {
 
     @Inject
     protected lateinit var emgController: AndroidEmgController
@@ -35,28 +38,37 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View> {
 
     private var renderView: AndroidEmgView<View>? = null
 
+    private var menuItemConnect: MenuItem? = null
+    private var menuItemDisconnect: MenuItem? = null
+    private var menuItemSamplingFrequency: MenuItem? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         (application as EmgApp).appComponent.inject(this)
-
         showRenderView()
-
-        emgController.androidEmgView = this
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+
+        menuItemConnect = menu?.findItem(R.id.menu_main_connect)
+        menuItemDisconnect = menu?.findItem(R.id.menu_main_disconnect)
+        menuItemSamplingFrequency = menu?.findItem(R.id.menu_main_sample_frequency)
+
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
-        // TODO Use viewCallback here
         when (item?.itemId) {
 
+            R.id.menu_main_reset -> reset()
+            R.id.menu_main_connect -> viewCallback.connectToClient()
+            R.id.menu_main_disconnect -> disconnectFromDevice()
+            R.id.menu_main_sample_frequency -> showSamplingFrequencyDialog()
+            R.id.menu_main_export -> { showExportDialogFragment() }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -72,13 +84,15 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View> {
     }
 
     override fun reset() {
-        // TODO Dispatch partially
         renderView?.reset()
     }
 
     override fun setDeviceControlsEnabled(isEnabled: Boolean) {
-        // TODO Dispatch partially
         renderView?.setDeviceControlsEnabled(isEnabled)
+
+        menuItemDisconnect?.isEnabled = isEnabled
+        menuItemSamplingFrequency?.isEnabled = isEnabled
+        menuItemConnect?.isEnabled = !isEnabled
     }
 
     override fun setupEmgClientDriverConfigViews(clients: List<EmgClientDriver>) {
@@ -101,8 +115,9 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View> {
         this.viewCallback = viewCallback
         this.config = config
 
-        // TODO Read from configuration
         renderView?.setupView(viewCallback, config)
+
+        // TODO Read from configuration
     }
 
     override fun showFrequencyAnalysisView(method: FrequencyAnalysisMethod) {
@@ -115,7 +130,51 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View> {
         renderView?.updateStatus(status)
     }
 
+    override fun onRenderViewReady() {
+        emgController.androidEmgView = this
+        setDeviceControlsEnabled(false)
+    }
+
     // --------------------------------------------------------------------
+
+    private fun showExportDialogFragment() {
+        val fragment = TextEnterDialogFragment
+                .newInstance("Export file as", R.mipmap.ic_launcher, false)
+        fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
+            override fun onTextEntered(text: String) {
+                viewCallback.exportData(text, CsvDataStorage())
+            }
+        }
+        fragment.show(supportFragmentManager, "dialog-export")
+    }
+
+    private fun showSamplingFrequencyDialog() {
+
+        val fragment = TextEnterDialogFragment
+                .newInstance("Set sampling frequency", R.mipmap.ic_launcher, true)
+        fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
+            override fun onTextEntered(text: String) {
+                viewCallback.setSamplingFrequency(text.toDouble())
+            }
+        }
+        fragment.show(supportFragmentManager, "dialog-fs")
+    }
+
+    private fun disconnectFromDevice() {
+
+        if (config.isWriteToLogEnabled) {
+            val fragment = TextEnterDialogFragment
+                    .newInstance("Save recording as", R.mipmap.ic_launcher, false)
+            fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
+                override fun onTextEntered(text: String) {
+                    viewCallback.disconnectFromClient(text)
+                }
+            }
+            fragment.show(supportFragmentManager, "dialog-save-as")
+        } else {
+            viewCallback.disconnectFromClient(null)
+        }
+    }
 
     private fun showRenderView() {
 

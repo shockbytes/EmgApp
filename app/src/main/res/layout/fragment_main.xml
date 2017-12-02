@@ -52,6 +52,7 @@
         tools:ignore="NestedWeights" >
 
         <Button
+            android:id="@+id/fragment_main_btn_clients"
             style="?android:borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -60,6 +61,7 @@
             android:text="@string/toolbar_client" />
 
         <Button
+            android:id="@+id/fragment_main_btn_filter"
             style="?android:borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -68,6 +70,7 @@
             android:text="@string/toolbar_filter" />
 
         <Button
+            android:id="@+id/fragment_main_btn_analysis"
             style="?android:borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -76,6 +79,7 @@
             android:text="@string/toolbar_analysis" />
 
         <Button
+            android:id="@+id/fragment_main_btn_tools"
             style="?android:borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"

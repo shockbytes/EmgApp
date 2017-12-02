@@ -20,7 +20,7 @@
         android:id="@+id/menu_main_export"
         android:icon="@drawable/ic_menu_export"
         android:title="@string/menu_main_export"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_main_reset"

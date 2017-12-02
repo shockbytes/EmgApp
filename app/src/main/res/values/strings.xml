@@ -12,4 +12,7 @@
     <string name="toolbar_analysis">Analysis</string>
     <string name="toolbar_filter">Filter</string>
     <string name="toolbar_client">Client</string>
+    <string name="menu_analysis_fft">Fast Fourier Transform</string>
+    <string name="menu_analysis_power_spectrum">Power spectrum</string>
+    <string name="enter">Enter</string>
 </resources>
