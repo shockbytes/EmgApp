@@ -3,6 +3,7 @@ package at.fhooe.mc.emg.app.ui.activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,6 +24,7 @@ import at.fhooe.mc.emg.core.tools.Tool
 import at.fhooe.mc.emg.core.util.config.EmgConfig
 import at.fhooe.mc.emg.core.view.EmgViewCallback
 import at.fhooe.mc.emg.core.view.VisualView
+import io.reactivex.Observable
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewReadyListener {
@@ -46,7 +48,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         (application as EmgApp).appComponent.inject(this)
-        showRenderView()
+        showRenderView(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -56,6 +58,9 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         menuItemDisconnect = menu?.findItem(R.id.menu_main_disconnect)
         menuItemSamplingFrequency = menu?.findItem(R.id.menu_main_sample_frequency)
 
+        // This is the point where all necessary controls are initialized
+        lockDeviceControls(false)
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -64,7 +69,10 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         when (item?.itemId) {
 
             R.id.menu_main_reset -> reset()
-            R.id.menu_main_connect -> viewCallback.connectToClient()
+            R.id.menu_main_connect -> {
+                viewCallback.connectToClient()
+                Log.wtf("EMG", "Connected")
+            }
             R.id.menu_main_disconnect -> disconnectFromDevice()
             R.id.menu_main_sample_frequency -> showSamplingFrequencyDialog()
             R.id.menu_main_export -> { showExportDialogFragment() }
@@ -79,24 +87,24 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         renderView?.setVisualView(view)
     }
 
-    override fun onRawClientDataAvailable(raw: String) {
-        renderView?.onRawClientDataAvailable(raw)
+    override fun exposeRawClientDataObservable(observable: Observable<String>) {
+        renderView?.exposeRawClientDataObservable(observable)
     }
 
     override fun reset() {
         renderView?.reset()
     }
 
-    override fun setDeviceControlsEnabled(isEnabled: Boolean) {
-        renderView?.setDeviceControlsEnabled(isEnabled)
+    override fun lockDeviceControls(isLocked: Boolean) {
+        renderView?.lockDeviceControls(isLocked)
 
-        menuItemDisconnect?.isEnabled = isEnabled
-        menuItemSamplingFrequency?.isEnabled = isEnabled
-        menuItemConnect?.isEnabled = !isEnabled
+        menuItemDisconnect?.isEnabled = isLocked
+        menuItemSamplingFrequency?.isEnabled = isLocked
+        menuItemConnect?.isEnabled = !isLocked
     }
 
     override fun setupEmgClientDriverConfigViews(clients: List<EmgClientDriver>) {
-        // TODO Do that here
+        // TODO Find a way to initialize this
     }
 
     override fun setupEmgClientDriverView(clients: List<EmgClientDriver>, defaultClient: EmgClientDriver) {
@@ -116,8 +124,6 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         this.config = config
 
         renderView?.setupView(viewCallback, config)
-
-        // TODO Read from configuration
     }
 
     override fun showFrequencyAnalysisView(method: FrequencyAnalysisMethod) {
@@ -132,7 +138,6 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
 
     override fun onRenderViewReady() {
         emgController.androidEmgView = this
-        setDeviceControlsEnabled(false)
     }
 
     // --------------------------------------------------------------------
@@ -176,26 +181,32 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         }
     }
 
-    private fun showRenderView() {
+    private fun showRenderView(savedInstanceState: Bundle?) {
 
-        val fragment = MainFragment.newInstance()
+        val tag = "main-fragment"
+        val fragment: MainFragment
+        if (savedInstanceState == null) {
+            fragment = MainFragment.newInstance()
+            showFragment(fragment, tag)
+        } else {
+            fragment = supportFragmentManager.findFragmentByTag(tag) as MainFragment
+        }
+
         // Store reference to renderView, which will be called in the callbacks of EmgView
         renderView = fragment
-
-        showFragment(fragment)
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showFragment(fragment: Fragment, tag: String? = null) {
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .replace(R.id.main_container, fragment)
+                .replace(R.id.main_container, fragment, tag)
                 .commit()
     }
 
-    private fun showFragmentWithBackstack(fragment: Fragment) {
+    private fun showFragmentWithBackstack(fragment: Fragment, tag: String? = null) {
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .replace(R.id.main_container, fragment)
+                .replace(R.id.main_container, fragment, tag)
                 .addToBackStack(null)
                 .commit()
     }

@@ -1,6 +1,7 @@
 package at.fhooe.mc.emg.app.ui.fragment
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.widget.PopupMenu
 import android.text.method.ScrollingMovementMethod
@@ -8,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
@@ -23,12 +26,25 @@ import at.fhooe.mc.emg.core.view.EmgViewCallback
 import at.fhooe.mc.emg.core.view.VisualView
 import at.shockbytes.remote.fragment.BaseFragment
 import butterknife.BindView
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
+
 
 /**
  * @author Martin Macheiner
  * Date: 01.12.2017.
  */
 class MainFragment : BaseFragment(), AndroidEmgView<View> {
+
+
+    @BindView(R.id.fragment_main_scroll_view_console)
+    protected lateinit var scrollViewConsole: ScrollView
+
+    @BindView(R.id.fragment_main_layout)
+    protected lateinit var layout: LinearLayout
 
     @BindView(R.id.fragment_main_txt_console)
     protected lateinit var txtConsole: TextView
@@ -56,6 +72,8 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
     private var renderViewListener: OnRenderViewReadyListener? = null
 
+    private var rawDisposable: Disposable? = null
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_main, container, false)
@@ -75,16 +93,58 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         renderViewListener = context as? OnRenderViewReadyListener
     }
 
+    override fun onDestroyView() {
+        layout.removeView(visualView?.view)
+        if (rawDisposable?.isDisposed == false) {
+            rawDisposable?.dispose()
+        }
+        super.onDestroyView()
+    }
+
     // --------------------------------------------------------------------
 
-    override fun onRawClientDataAvailable(raw: String) {
-        txtConsole.append("$raw\n")
+    override fun exposeRawClientDataObservable(observable: Observable<String>) {
+
+        var counter = 0
+        rawDisposable = observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.computation())
+                .buffer(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .subscribe {
+
+                    if (it.size > 0) {
+
+                        // Clear every 10 seconds
+                        if (counter > 20) {
+                            txtConsole.text = ""
+                            counter = 0
+                        }
+                        txtConsole.append("\n")
+                        txtConsole.append(it.joinToString("\n"))
+                        scrollViewConsole.fullScroll(ScrollView.FOCUS_DOWN)
+
+                        counter++
+                    }
+                }
     }
 
     override fun setVisualView(view: VisualView<View>) {
         this.visualView = view
 
-        // TODO Replace views
+        // Set the correct layout weight and add margin
+        val isPortrait = (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+        val lp = if (isPortrait)
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) else
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT)
+
+        val addIdx = if (isPortrait) 1 else 0
+
+        lp.weight = if (isPortrait) 0.5f else 0.75f
+        val m = AppUtils.dp2Pixel(context, 8f)
+        lp.setMargins(m, m, m, m)
+        visualView?.view?.layoutParams = lp
+
+        layout.addView(visualView?.view, addIdx)
     }
 
     override fun reset() {
@@ -92,11 +152,11 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         txtConsole.text = ""
     }
 
-    override fun setDeviceControlsEnabled(isEnabled: Boolean) {
+    override fun lockDeviceControls(isLocked: Boolean) {
 
         // Logic is in reverse for connection and channels
-        btnFilter.isEnabled = !isEnabled
-        btnClients.isEnabled = !isEnabled
+        btnFilter.isEnabled = !isLocked
+        btnClients.isEnabled = !isLocked
     }
 
     override fun setupEmgClientDriverConfigViews(clients: List<EmgClientDriver>) {
@@ -113,7 +173,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             val client = AppUtils.getClientDriverByName(clients, it.title as String)
             viewCallback.setSelectedClient(client!!) // Should never cause a NPE
             btnClients.setCompoundDrawablesWithIntrinsicBounds(0,
-                            AppUtils.iconForClient(client.category), 0, 0)
+                    AppUtils.iconForClient(client.category), 0, 0)
             true
         }
         btnClients.setOnClickListener { menu.show() }
@@ -169,7 +229,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         menu.menuInflater.inflate(R.menu.menu_analysis, menu.menu)
         menu.setOnMenuItemClickListener {
 
-            when (it.itemId){
+            when (it.itemId) {
 
                 R.id.menu_analysis_fft -> {
                     viewCallback.requestFrequencyAnalysisView(FrequencyAnalysisMethod.Method.FFT)

@@ -1,5 +1,6 @@
 package at.fhooe.mc.emg.app.dagger
 
+import android.os.Environment
 import at.fhooe.mc.emg.app.client.bluetooth.BluetoothClientDriver
 import at.fhooe.mc.emg.app.core.AndroidEmgController
 import at.fhooe.mc.emg.app.core.EmgApp
@@ -11,6 +12,7 @@ import at.fhooe.mc.emg.core.tools.Tool
 import at.fhooe.mc.emg.core.tools.conconi.ConconiTool
 import dagger.Module
 import dagger.Provides
+import java.io.File
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -50,10 +52,11 @@ class AppModule(private val app: EmgApp) {
     @Singleton
     @Named("simulationFolder")
     fun provideSimulationFolder(): String {
-        // TODO Find and create a suitable folder here
-        // Can be basically only on the SD Card, because internal memory would require
-        // special Android Code
-        return ""
+        val path = File(Environment.getExternalStorageDirectory().absolutePath + "/emg/sim")
+        if (!path.exists()) {
+            path.mkdirs()
+        }
+        return path.absolutePath
     }
 
 

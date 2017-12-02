@@ -9,6 +9,7 @@ import at.fhooe.mc.emg.messaging.EmgMessaging
  * @author Martin Macheiner
  * Date: 29.11.2017.
  */
+// TODO Implement BluetoothClientDriver
 class BluetoothClientDriver(cv: EmgClientDriverConfigView? = null) : EmgClientDriver(cv) {
 
     override val category: ClientCategory = ClientCategory.BLUETOOTH
@@ -23,15 +24,15 @@ class BluetoothClientDriver(cv: EmgClientDriverConfigView? = null) : EmgClientDr
     override val shortName: String = "Bluetooth"
 
     override fun connect() {
-        // TODO
+        // Connect to Bluetooth client
     }
 
     override fun disconnect() {
-        // TODO
+        // Disconnect from Bluetooth client
     }
 
     override fun sendSamplingFrequencyToClient() {
-        // TODO
+        // Send the sampling rate
     }
 
 }

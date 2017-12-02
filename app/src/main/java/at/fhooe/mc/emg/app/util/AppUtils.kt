@@ -1,5 +1,7 @@
 package at.fhooe.mc.emg.app.util
 
+import android.content.Context
+import android.util.TypedValue
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
@@ -11,6 +13,11 @@ import at.fhooe.mc.emg.core.tools.Tool
  * Date: 01.12.2017.
  */
 object AppUtils {
+
+    fun dp2Pixel(context: Context, dp: Float): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.resources.displayMetrics).toInt()
+    }
 
     fun iconForClient(category: ClientCategory): Int {
 
