@@ -29,27 +29,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_main_client_config"
-        android:title="@string/menu_main_client_config"
-        app:showAsAction="ifRoom" >
-
-        <menu>
-
-            <item android:id="@+id/menu_main_client_config_sim"
-                app:actionViewClass="android.support.v7.widget.AppCompatButton"
-                android:title="Simulator"/>
-
-            <item android:id="@+id/menu_main_client_config_net"
-                android:title="Network"/>
-
-            <item android:id="@+id/menu_main_client_config_bluetooth"
-                android:title="Bluetooth"/>
-
-        </menu>
-
-    </item>
-
-    <item
         android:id="@+id/menu_main_sample_frequency"
         android:title="@string/menu_main_sampling_frequency"
         app:showAsAction="ifRoom" />

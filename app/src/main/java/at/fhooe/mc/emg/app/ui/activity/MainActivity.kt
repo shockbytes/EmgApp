@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.core.AndroidEmgController
 import at.fhooe.mc.emg.app.core.EmgApp
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     private var menuItemConnect: MenuItem? = null
     private var menuItemDisconnect: MenuItem? = null
     private var menuItemSamplingFrequency: MenuItem? = null
-    private var menuItemClientConfig: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +56,6 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         menuItemConnect = menu?.findItem(R.id.menu_main_connect)
         menuItemDisconnect = menu?.findItem(R.id.menu_main_disconnect)
         menuItemSamplingFrequency = menu?.findItem(R.id.menu_main_sample_frequency)
-        menuItemClientConfig = menu?.findItem(R.id.menu_main_client_config)
 
         // This is the point where all necessary controls are initialized
         attachEmgView()
@@ -75,7 +72,6 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
             R.id.menu_main_disconnect -> disconnectFromDevice()
             R.id.menu_main_sample_frequency -> showSamplingFrequencyDialog()
             R.id.menu_main_export -> showExportDialogFragment()
-            R.id.menu_main_client_config_sim -> Toast.makeText(applicationContext, "Sim", Toast.LENGTH_SHORT).show()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -148,7 +144,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
 
     private fun showExportDialogFragment() {
         val fragment = TextEnterDialogFragment
-                .newInstance("Export file as", R.mipmap.ic_launcher, false)
+                .newInstance("Export file as", hint = "Path")
         fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
             override fun onTextEntered(text: String) {
                 viewCallback.exportData(text, CsvDataStorage())
@@ -160,7 +156,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     private fun showSamplingFrequencyDialog() {
 
         val fragment = TextEnterDialogFragment
-                .newInstance("Set sampling frequency", R.mipmap.ic_launcher, true)
+                .newInstance("Set sampling frequency", hint= "Frequency in Hz", numbersOnly =  true)
         fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
             override fun onTextEntered(text: String) {
                 viewCallback.setSamplingFrequency(text.toDouble())
@@ -173,7 +169,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
 
         if (config.isWriteToLogEnabled) {
             val fragment = TextEnterDialogFragment
-                    .newInstance("Save recording as", R.mipmap.ic_launcher, false)
+                    .newInstance("Save recording as",  hint = "Path")
             fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
                 override fun onTextEntered(text: String) {
                     viewCallback.disconnectFromClient(text)

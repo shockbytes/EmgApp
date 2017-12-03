@@ -3,7 +3,6 @@ package at.fhooe.mc.emg.app.ui.fragment
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.support.v7.widget.PopupMenu
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
@@ -14,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import at.fhooe.mc.emg.app.R
+import at.fhooe.mc.emg.app.ui.fragment.config.AndroidConfigView
 import at.fhooe.mc.emg.app.util.AppUtils
 import at.fhooe.mc.emg.app.view.AndroidEmgView
 import at.fhooe.mc.emg.app.view.OnRenderViewReadyListener
@@ -172,8 +172,14 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         menu.setOnMenuItemClickListener {
             val client = AppUtils.getClientDriverByConfigViewName(clients, it.title as String)
             // Workaround for Android, as DialogFragment must be explicitly called!
-            (client?.configView as? DialogFragment)?.show(fragmentManager, "cv-${it.title}")
-            client?.configView?.show(client)
+            // And the ConfigView must be initialized first
+            (client?.configView as? AndroidConfigView)?.viewReadyListener = 
+                    object : AndroidConfigView.OnConfigViewReadyListener {
+                        override fun onReady() {
+                            client?.configView?.show(client)
+                        }
+                    }
+            (client?.configView as? AndroidConfigView)?.show(fragmentManager, "cv-${it.title}")
             true
         }
         btnClients.setOnLongClickListener { menu.show(); true }

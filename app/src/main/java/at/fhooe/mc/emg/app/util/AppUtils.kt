@@ -7,12 +7,23 @@ import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.filter.Filter
 import at.fhooe.mc.emg.core.tools.Tool
+import java.util.regex.Pattern
 
 /**
  * @author Martin Macheiner
  * Date: 01.12.2017.
  */
 object AppUtils {
+
+    private val ipAddressRegex = Pattern.compile(
+            "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(25[0-5]|2[0-4]"
+                    + "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1]"
+                    + "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}"
+                    + "|[1-9][0-9]|[0-9]))")
+
+    fun validateIAddress(ip: String): Boolean {
+        return ipAddressRegex.matcher(ip).matches()
+    }
 
     fun dp2Pixel(context: Context, dp: Float): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
@@ -21,7 +32,7 @@ object AppUtils {
 
     fun iconForClient(category: ClientCategory): Int {
 
-        return when(category) {
+        return when (category) {
 
             ClientCategory.SIMULATION -> R.drawable.ic_client_simulation
             ClientCategory.NETWORK -> R.drawable.ic_client_network

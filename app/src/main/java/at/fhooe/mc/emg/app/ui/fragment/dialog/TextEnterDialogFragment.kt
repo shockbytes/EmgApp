@@ -30,21 +30,23 @@ class TextEnterDialogFragment : DialogFragment() {
         val title = arguments.getString(ARG_TITLE)
         val icon = arguments.getInt(ARG_ICON)
         val numOnly = arguments.getBoolean(ARG_NUM_ONLY)
+        val hint = arguments.getString(ARG_HINT)
 
         return AlertDialog.Builder(context)
                 .setPositiveButton(R.string.enter) { _, _ -> listener?.onTextEntered(txt?.text.toString()) }
                 .setNegativeButton(android.R.string.cancel) { _, _ -> dismiss() }
                 .setIcon(icon)
-                .setView(buildView(numOnly))
+                .setView(buildView(numOnly, hint))
                 .setTitle(title)
                 .create()
 
     }
 
-    private fun buildView(numOnly: Boolean): View {
+    private fun buildView(numOnly: Boolean, hint: String): View {
         val v = LayoutInflater.from(context)
                 .inflate(R.layout.dialogfragment_textenter, null, false)
         txt = v.findViewById(R.id.dialogfragment_textenter_txt)
+        txt?.hint = hint
         txt?.inputType = if (numOnly) InputType.TYPE_CLASS_NUMBER else InputType.TYPE_CLASS_TEXT
         return v
     }
@@ -54,14 +56,16 @@ class TextEnterDialogFragment : DialogFragment() {
         private val ARG_TITLE = "arg_title"
         private val ARG_ICON = "arg_icon"
         private val ARG_NUM_ONLY = "arg_num_only"
+        private val ARG_HINT = "arg_hint"
 
         fun newInstance(title: String, icon: Int = R.mipmap.ic_launcher,
-                        numbersOnly: Boolean = false): TextEnterDialogFragment {
+                        numbersOnly: Boolean = false, hint: String): TextEnterDialogFragment {
             val fragment = TextEnterDialogFragment()
             val args = Bundle()
             args.putString(ARG_TITLE, title)
             args.putInt(ARG_ICON, icon)
             args.putBoolean(ARG_NUM_ONLY, numbersOnly)
+            args.putString(ARG_HINT, hint)
             fragment.arguments = args
             return fragment
         }
