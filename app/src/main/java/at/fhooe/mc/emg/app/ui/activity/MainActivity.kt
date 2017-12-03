@@ -3,10 +3,10 @@ package at.fhooe.mc.emg.app.ui.activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.core.AndroidEmgController
 import at.fhooe.mc.emg.app.core.EmgApp
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     private var menuItemConnect: MenuItem? = null
     private var menuItemDisconnect: MenuItem? = null
     private var menuItemSamplingFrequency: MenuItem? = null
+    private var menuItemClientConfig: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +58,10 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         menuItemConnect = menu?.findItem(R.id.menu_main_connect)
         menuItemDisconnect = menu?.findItem(R.id.menu_main_disconnect)
         menuItemSamplingFrequency = menu?.findItem(R.id.menu_main_sample_frequency)
+        menuItemClientConfig = menu?.findItem(R.id.menu_main_client_config)
 
         // This is the point where all necessary controls are initialized
-        lockDeviceControls(false)
+        attachEmgView()
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -69,13 +71,11 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         when (item?.itemId) {
 
             R.id.menu_main_reset -> reset()
-            R.id.menu_main_connect -> {
-                viewCallback.connectToClient()
-                Log.wtf("EMG", "Connected")
-            }
+            R.id.menu_main_connect -> viewCallback.connectToClient()
             R.id.menu_main_disconnect -> disconnectFromDevice()
             R.id.menu_main_sample_frequency -> showSamplingFrequencyDialog()
-            R.id.menu_main_export -> { showExportDialogFragment() }
+            R.id.menu_main_export -> showExportDialogFragment()
+            R.id.menu_main_client_config_sim -> Toast.makeText(applicationContext, "Sim", Toast.LENGTH_SHORT).show()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     }
 
     override fun setupEmgClientDriverConfigViews(clients: List<EmgClientDriver>) {
-        // TODO Find a way to initialize this
+        renderView?.setupEmgClientDriverConfigViews(clients)
     }
 
     override fun setupEmgClientDriverView(clients: List<EmgClientDriver>, defaultClient: EmgClientDriver) {
@@ -137,10 +137,14 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     }
 
     override fun onRenderViewReady() {
-        emgController.androidEmgView = this
     }
 
     // --------------------------------------------------------------------
+
+    private fun attachEmgView() {
+        lockDeviceControls(false)
+        emgController.androidEmgView = this
+    }
 
     private fun showExportDialogFragment() {
         val fragment = TextEnterDialogFragment

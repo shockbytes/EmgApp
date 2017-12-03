@@ -3,6 +3,7 @@ package at.fhooe.mc.emg.app.ui.fragment
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
 import android.support.v7.widget.PopupMenu
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
@@ -160,7 +161,22 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
     }
 
     override fun setupEmgClientDriverConfigViews(clients: List<EmgClientDriver>) {
-        // Will be handled in parent AndroidEmgView
+
+        val menu = PopupMenu(context, btnClients)
+        clients.forEach {
+            if (it.hasConfigView) {
+                menu.menu.add(it.configView?.name)
+            }
+        }
+
+        menu.setOnMenuItemClickListener {
+            val client = AppUtils.getClientDriverByConfigViewName(clients, it.title as String)
+            // Workaround for Android, as DialogFragment must be explicitly called!
+            (client?.configView as? DialogFragment)?.show(fragmentManager, "cv-${it.title}")
+            client?.configView?.show(client)
+            true
+        }
+        btnClients.setOnLongClickListener { menu.show(); true }
     }
 
     override fun setupEmgClientDriverView(clients: List<EmgClientDriver>, defaultClient: EmgClientDriver) {

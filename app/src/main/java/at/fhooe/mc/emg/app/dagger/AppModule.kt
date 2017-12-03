@@ -4,6 +4,7 @@ import android.os.Environment
 import at.fhooe.mc.emg.app.client.bluetooth.BluetoothClientDriver
 import at.fhooe.mc.emg.app.core.AndroidEmgController
 import at.fhooe.mc.emg.app.core.EmgApp
+import at.fhooe.mc.emg.app.ui.fragment.config.AndroidNetworkClientDriverConfigView
 import at.fhooe.mc.emg.app.util.SharedPreferencesEmgConfigStorage
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
@@ -36,7 +37,7 @@ class AppModule(private val app: EmgApp) {
     @Singleton
     fun provideEmgClients(@Named("simulationFolder") simulationFolder: String): List<@JvmSuppressWildcards EmgClientDriver> {
         return arrayListOf(SimulationClientDriver(simulationFolder = simulationFolder),
-                NetworkClientDriver(),
+                NetworkClientDriver(AndroidNetworkClientDriverConfigView()),
                 BluetoothClientDriver())
     }
 

@@ -39,6 +39,15 @@ object AppUtils {
         return null
     }
 
+    fun getClientDriverByConfigViewName(clients: List<EmgClientDriver>, cvName: String): EmgClientDriver? {
+        clients.forEach {
+            if (it.configView?.name == cvName) {
+                return it
+            }
+        }
+        return null
+    }
+
     fun getFilterByName(filter: List<Filter>, name: String): Filter? {
         filter.forEach {
             if (it.name == name) {
