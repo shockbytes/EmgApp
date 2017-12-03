@@ -5,4 +5,36 @@
     android:orientation="vertical"
     android:padding="8dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Simulation source"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <Spinner
+        android:id="@+id/fragment_client_config_sim_spinner_sources"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp" />
+
+    <CheckBox
+        android:id="@+id/fragment_client_config_sim_cb_endless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Endless loop" />
+
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/fragment_client_config_sim_btn_apply"
+        style="?borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:text="@string/apply"
+        android:textColor="@color/colorAccent" />
+
+
 </LinearLayout>

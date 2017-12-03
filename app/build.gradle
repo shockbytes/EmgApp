@@ -8,7 +8,7 @@ def butterknifeVersion = "8.8.1"
 def supportVersion = "26.1.0"
 def rxJavaVersion = "2.1.6"
 def rxAndroidVersion = "2.0.1"
-def emgVersion = "0.6.1"
+def emgVersion = "0.6.2"
 
 android {
     compileSdkVersion 26
@@ -25,6 +25,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
