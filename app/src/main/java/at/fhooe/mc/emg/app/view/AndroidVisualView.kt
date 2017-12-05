@@ -3,12 +3,11 @@ package at.fhooe.mc.emg.app.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
-import at.fhooe.mc.emg.clientdriver.ChannelData
+import at.fhooe.mc.emg.clientdriver.model.EmgData
 import at.fhooe.mc.emg.core.filter.Filter
 import at.fhooe.mc.emg.core.view.VisualView
 import com.github.mikephil.charting.charts.LineChart
@@ -51,7 +50,7 @@ class AndroidVisualView(private val context: Context,
                     .toList().map { it.y }.toDoubleArray() */
         }
 
-    override val bufferSpan: Long = AppUtils.bufferSpan
+    override val bufferSpan: Long = AppUtils.bufferSpan*4
 
     override val scheduler: Scheduler? = AndroidSchedulers.mainThread()
 
@@ -122,80 +121,82 @@ class AndroidVisualView(private val context: Context,
         chart.axisLeft.axisMaximum = maximum.toFloat()
     }
 
-    override fun update(data: ChannelData, filters: List<Filter>) {
+    override fun update(data: EmgData, filters: List<Filter>) {
 
-        if (!addChannelsIfNecessary(data, filters)) {
-            for (i in 0 until data.channelCount) {
-                filters
-                        .filter { it.isEnabled }
-                        .forEach { filter ->
-
-                            val supposedName = (i + 1).toString() + "." + filter.shortName
-                            val set = getSetByName(supposedName)
-
-                            var xOff = set?.entryCount ?: 0
-                            xOff = if (xOff == windowSize) 0 else xOff
-                            Log.wtf("EMG", "$xOff / ${data.getXSeries(i).size}")
-                            channelData2Entries(data, i, filter, xOff).forEach {
-                                Log.wtf("EMG", it.toString())
-                                set?.addEntry(it)
-                                if (set?.entryCount!! > windowSize) {
-                                    set.removeFirst()
-                                }
-                            }
-
-                            // let the chart know it's data has changed
-                            chart.data.notifyDataChanged()
-                            chart.notifyDataSetChanged()
-
-                            // move to the latest entry
-                            chart.moveViewToX(chart.data.entryCount.toFloat())
-                        }
-            }
-        }
-    }
-
-    private fun addChannelsIfNecessary(data: ChannelData, filters: List<Filter>): Boolean {
-
-        val seriesCount = chart.data.dataSetCount
-        val addSeries = seriesCount < data.channelCount
-        if (addSeries) {
-            for (i in seriesCount until data.channelCount) {
-                filters
-                        .filter { it.isEnabled }
-                        .forEach { filter ->
-
-                            val title = (i + 1).toString() + "." + filter.shortName
-                            val set = createDataSet(title)
-                            channelData2Entries(data, i, filter).forEach {
-                                set.addEntry(it)
-                            }
+        //if (!addChannelsIfNecessary(data, filters)) {
+        for (i in 0 until data.channelCount) {
+            filters
+                    .filter { it.isEnabled }
+                    .forEach { filter ->
+                        val supposedName = (i + 1).toString() + "." + filter.shortName
+                        val set = getSetByName(supposedName)
+                        val isNewlyCreated = set.entryCount == 0
+                        addToDataSet(set, data, i, filter)
+                        if (isNewlyCreated) {
                             chart.data.addDataSet(set)
                         }
+                        invalidateChart(chart.data.getDataSetByIndex(0).entryCount.toFloat())
+                    }
+        }
+        //}
+    }
+
+    // ----------------------------------------------------------------------------------
+
+    private fun addChannelsIfNecessary(data: EmgData, filters: List<Filter>): Boolean {
+
+        val channelCount = chart.data.dataSetCount
+        val addChannels = channelCount < data.channelCount
+        if (addChannels) {
+            for (i in channelCount until data.channelCount) {
+                filters
+                        .filter { it.isEnabled }
+                        .forEach { filter ->
+                            val title = (i + 1).toString() + "." + filter.shortName
+                            val set = getSetByName(title)
+                            val isNewlyCreated = set.entryCount == 0
+                            addToDataSet(set, data, i, filter)
+                            if (isNewlyCreated) {
+                                chart.data.addDataSet(set)
+                            }
+                            invalidateChart(chart.data.getDataSetByIndex(0).entryCount.toFloat())
+                        }
             }
         }
-        return addSeries
+        return addChannels
     }
 
-    private fun channelData2Entries(data: ChannelData, channel: Int,
-                                    filter: Filter, xOff: Int = 0): List<Entry> {
-
-        return (xOff until data.getXSeries(channel).size)
-                .map { idx ->
-                    Entry(data.getXSeries(channel)[idx].plus(xOff.toDouble()).toFloat(),
-                            filter.step(data.getYSeries(channel)[idx]).toFloat())
-                }
-                .toList()
+    private fun channelData2Entries(data: EmgData, channel: Int,
+                                    filter: Filter): List<Entry> {
+        return data.plotData(channel)
+                .map { Entry(it.x.toFloat(), filter.step(it.y).toFloat()) }
     }
 
-    private fun getSetByName(name: String): ILineDataSet? {
+    private fun invalidateChart(end: Float) {
+        // let the chart know it's data has changed
+        chart.data.notifyDataChanged()
+        chart.notifyDataSetChanged()
+
+        // move to the latest entry
+        chart.moveViewToX(end)
+    }
+
+    private fun getSetByName(name: String): ILineDataSet {
         chart.data.dataSets.forEach {
             if (it.label == name) {
                 return it
             }
         }
-        return null
+        return createDataSet(name)
     }
+
+    private fun addToDataSet(set: ILineDataSet?, data: EmgData, channel: Int, filter: Filter) {
+        channelData2Entries(data, channel, filter).forEach {
+            set?.addEntry(it)
+            // TODO Check if also remove entries when buffer is full
+        }
+    }
+
 
     private fun createDataSet(title: String): LineDataSet {
         val set = LineDataSet(null, title)
