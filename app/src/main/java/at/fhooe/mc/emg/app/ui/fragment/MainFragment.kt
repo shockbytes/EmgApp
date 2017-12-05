@@ -110,13 +110,13 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         rawDisposable = observable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.computation())
-                .buffer(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .buffer(AppUtils.bufferSpan, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe {
 
                     if (it.size > 0) {
 
-                        // Clear every 10 seconds
-                        if (counter > 20) {
+                        // Clear every 2.5 seconds
+                        if (counter > 10) {
                             txtConsole.text = ""
                             counter = 0
                         }
@@ -214,6 +214,10 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             f?.isEnabled = it.isChecked
             true
         }
+
+        // Select raw filter by default
+        filter[0].isEnabled = true
+
         btnFilter.setOnClickListener { menu.show() }
     }
 
