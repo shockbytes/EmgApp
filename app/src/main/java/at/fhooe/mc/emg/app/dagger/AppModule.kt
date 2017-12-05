@@ -7,6 +7,7 @@ import at.fhooe.mc.emg.app.core.EmgApp
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidBluetoothClientDriverConfigView
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidNetworkClientDriverConfigView
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidSimulationClientDriverConfigView
+import at.fhooe.mc.emg.app.util.AppUtils
 import at.fhooe.mc.emg.app.util.SharedPreferencesEmgConfigStorage
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
@@ -32,7 +33,7 @@ class AppModule(private val app: EmgApp) {
     fun provideEmgController(clients: List<@JvmSuppressWildcards EmgClientDriver>,
                              tools: List<@JvmSuppressWildcards Tool>): AndroidEmgController {
         return AndroidEmgController(app.applicationContext, clients, tools,
-                SharedPreferencesEmgConfigStorage(app.applicationContext))
+                SharedPreferencesEmgConfigStorage(app.applicationContext), AppUtils.defaultWindowSize)
     }
 
     @Provides

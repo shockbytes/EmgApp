@@ -15,6 +15,9 @@ import java.util.regex.Pattern
  */
 object AppUtils {
 
+    val defaultWindowSize = 512
+    val bufferSpan = 250L
+
     private val ipAddressRegex = Pattern.compile(
             "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(25[0-5]|2[0-4]"
                     + "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1]"

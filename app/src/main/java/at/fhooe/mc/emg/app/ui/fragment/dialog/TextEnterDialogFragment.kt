@@ -1,13 +1,15 @@
 package at.fhooe.mc.emg.app.ui.fragment.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
+import android.support.design.widget.TextInputEditText
+import android.support.design.widget.TextInputLayout
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
 import at.fhooe.mc.emg.app.R
 
 /**
@@ -23,7 +25,7 @@ class TextEnterDialogFragment : DialogFragment() {
 
     var listener: OnTextEnteredListener? = null
 
-    private var txt: EditText? = null
+    private var txt: TextInputEditText? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -42,11 +44,12 @@ class TextEnterDialogFragment : DialogFragment() {
 
     }
 
+    @SuppressLint("InflateParams")
     private fun buildView(numOnly: Boolean, hint: String): View {
         val v = LayoutInflater.from(context)
                 .inflate(R.layout.dialogfragment_textenter, null, false)
         txt = v.findViewById(R.id.dialogfragment_textenter_txt)
-        txt?.hint = hint
+        (v as TextInputLayout).hint = hint
         txt?.inputType = if (numOnly) InputType.TYPE_CLASS_NUMBER else InputType.TYPE_CLASS_TEXT
         return v
     }

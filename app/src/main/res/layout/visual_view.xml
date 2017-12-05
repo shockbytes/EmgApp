@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.jjoe64.graphview.GraphView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.github.mikephil.charting.charts.LineChart
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_margin="8dp"
     android:padding="8dp"

@@ -5,6 +5,8 @@ Android Application for the EmgFramework project (https://github.com/shockbytes/
 ## TODO
 
 * Implement Bluetooth client
+* Implement Conconi View
+* Implement settings screen
 * Implement chart for visualization
 * ~~Implement UI~~
 * ~~Place simulation files in simulation on SD Card~~
