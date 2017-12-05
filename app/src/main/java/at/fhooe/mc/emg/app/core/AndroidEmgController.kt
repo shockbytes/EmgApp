@@ -15,9 +15,9 @@ import at.fhooe.mc.emg.core.view.VisualView
  * Date: 28.11.2017.
  */
 class AndroidEmgController(context: Context, c: List<EmgClientDriver>, t: List<Tool>,
-                           cs: EmgConfigStorage) : EmgController(c, t, null, cs) {
+                           cs: EmgConfigStorage, windowSize: Int) : EmgController(c, t, null, cs) {
 
-    override val visualView: VisualView<View> = AndroidVisualView(context)
+    override val visualView: VisualView<View> = AndroidVisualView(context, windowSize)
 
     var androidEmgView: AndroidEmgView<View>? = null
         set(value) {

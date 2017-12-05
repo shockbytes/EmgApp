@@ -1,5 +1,6 @@
 package at.fhooe.mc.emg.app.ui.activity
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -68,8 +69,14 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         when (item?.itemId) {
 
             R.id.menu_main_reset -> reset()
-            R.id.menu_main_connect -> viewCallback.connectToClient()
-            R.id.menu_main_disconnect -> disconnectFromDevice()
+            R.id.menu_main_connect -> {
+                viewCallback.connectToClient()
+                lockOrientation(true)
+            }
+            R.id.menu_main_disconnect -> {
+                disconnectFromDevice()
+                lockOrientation(false)
+            }
             R.id.menu_main_sample_frequency -> showSamplingFrequencyDialog()
             R.id.menu_main_export -> showExportDialogFragment()
         }
@@ -136,6 +143,12 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     }
 
     // --------------------------------------------------------------------
+
+    private fun lockOrientation(lock: Boolean) {
+        val orientation = if (lock) ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
+        else ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        requestedOrientation = orientation
+    }
 
     private fun attachEmgView() {
         lockDeviceControls(false)
