@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.widget.PopupMenu
 import android.text.method.ScrollingMovementMethod
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import at.fhooe.mc.emg.app.ui.fragment.config.AndroidConfigView
 import at.fhooe.mc.emg.app.util.AppUtils
 import at.fhooe.mc.emg.app.view.AndroidEmgView
 import at.fhooe.mc.emg.app.view.OnRenderViewReadyListener
+import at.fhooe.mc.emg.app.view.OnViewReadyListener
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.EmgController
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
@@ -174,7 +176,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             // Workaround for Android, as DialogFragment must be explicitly called!
             // And the ConfigView must be initialized first
             (client?.configView as? AndroidConfigView)?.viewReadyListener = 
-                    object : AndroidConfigView.OnConfigViewReadyListener {
+                    object : OnViewReadyListener {
                         override fun onReady() {
                             client?.configView?.show(client)
                         }
@@ -182,7 +184,11 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             (client?.configView as? AndroidConfigView)?.show(fragmentManager, "cv-${it.title}")
             true
         }
-        btnClients.setOnLongClickListener { menu.show(); true }
+        btnClients.setOnLongClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            menu.show()
+            true
+        }
     }
 
     override fun setupEmgClientDriverView(clients: List<EmgClientDriver>, defaultClient: EmgClientDriver) {
@@ -198,7 +204,10 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
                     AppUtils.iconForClient(client.category), 0, 0)
             true
         }
-        btnClients.setOnClickListener { menu.show() }
+        btnClients.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            menu.show()
+        }
     }
 
     override fun setupFilterViews(filter: List<Filter>) {
@@ -218,7 +227,10 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         // Select raw filter by default
         filter[0].isEnabled = true
 
-        btnFilter.setOnClickListener { menu.show() }
+        btnFilter.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            menu.show()
+        }
     }
 
     override fun setupToolsView(tools: List<Tool>, controller: EmgController) {
@@ -231,7 +243,10 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             t?.start(controller)
             true
         }
-        btnTools.setOnClickListener { menu.show() }
+        btnTools.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            menu.show()
+        }
     }
 
     override fun setupView(viewCallback: EmgViewCallback, config: EmgConfig) {
@@ -266,7 +281,10 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             }
             true
         }
-        btnAnalysis.setOnClickListener { menu.show() }
+        btnAnalysis.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            menu.show()
+        }
     }
 
     companion object {

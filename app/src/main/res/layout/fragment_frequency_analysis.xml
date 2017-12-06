@@ -6,13 +6,15 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/fragment_frequency_analysis_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="FFT or Power spectrum"/>
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <com.jjoe64.graphview.GraphView
-        android:id="@+id/fragment_frequency_analysis_graphview"
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/fragment_frequency_analysis_chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp" />

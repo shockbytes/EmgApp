@@ -3,6 +3,7 @@ package at.fhooe.mc.emg.app.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import at.fhooe.mc.emg.app.R
@@ -30,11 +31,20 @@ class AndroidVisualView(private val context: Context,
 
     override val dataForFrequencyAnalysis: DoubleArray
         get() {
-            // TODO
-            return DoubleArray(0)
+            return if (chart.data != null && chart.data.dataSetCount > 0) {
+                val d = chart.data.dataSets[0]
+                val c = Math.max(d.entryCount, windowSize)
+                val array = DoubleArray(c)
+                for (i in 0 until c) {
+                    array[i] = d.getEntryForIndex(i).y.toDouble()
+                }
+                array
+            } else {
+                DoubleArray(0)
+            }
         }
 
-    override val bufferSpan: Long = AppUtils.bufferSpan
+    override val bufferSpan: Long = AppUtils.bufferSpan * 2
 
     override val scheduler: Scheduler? = AndroidSchedulers.mainThread()
 
@@ -141,7 +151,7 @@ class AndroidVisualView(private val context: Context,
                 return it
             }
         }
-        return createDataSet(name)
+        return createDataSet(name, chart.data.dataSets.size)
     }
 
     private fun addToDataSet(set: ILineDataSet?, data: EmgData, channel: Int, filter: Filter) {
@@ -149,17 +159,21 @@ class AndroidVisualView(private val context: Context,
         channelData2Entries(data, channel, filter).forEach { set?.addEntry(it) }
     }
 
-
-    private fun createDataSet(title: String): ILineDataSet {
+    private fun createDataSet(title: String, lineCount: Int): ILineDataSet {
         val set = LineDataSet(null, title)
         set.axisDependency = YAxis.AxisDependency.LEFT
         set.lineWidth = 1f
         set.setDrawValues(false)
         set.circleRadius = 2f
+
+        // Set line colors
+        val ta = context.resources.obtainTypedArray(R.array.chart_colors)
+        set.color = ta.getColor(lineCount, ContextCompat.getColor(context, R.color.blue))
+        ta.recycle()
+
         set.circleColors = set.colors
         set.valueTextSize = 10f
         return set
     }
-
 
 }

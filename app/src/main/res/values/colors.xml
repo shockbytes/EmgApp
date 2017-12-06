@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#2196F3</color>
+    <color name="colorAccent">@color/blueDark</color>
+
+    <color name="blue">#2196F3</color>
+    <color name="blueDark">#1976D2</color>
 
     <color name="error">#F44336</color>
     <color name="okay">#8BC34A</color>
+
+    <array name="chart_colors">
+
+        <!-- 1. channel -->
+        <item>@color/blueDark</item>
+        <item>#607D8B</item>
+        <item>#009688</item>
+        <item>#4CAF50</item>
+
+        <!-- 2. channel -->
+        <item>@color/error</item>
+        <item>#FF9800</item>
+        <item>#FFEB3B</item>
+        <item>#FF6F00</item>
+    </array>
 
 </resources>

@@ -5,6 +5,7 @@ import android.util.TypedValue
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
+import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
 import at.fhooe.mc.emg.core.tools.Tool
 import java.util.regex.Pattern
@@ -16,7 +17,7 @@ import java.util.regex.Pattern
 object AppUtils {
 
     val defaultWindowSize = 512
-    val bufferSpan = 250L
+    val bufferSpan = 500L
 
     private val ipAddressRegex = Pattern.compile(
             "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(25[0-5]|2[0-4]"
@@ -78,6 +79,15 @@ object AppUtils {
             }
         }
         return null
+    }
+
+    fun getFrequencyAnalysisTitleByMethod(method: FrequencyAnalysisMethod.Method): Int {
+
+        return when(method) {
+            FrequencyAnalysisMethod.Method.FFT -> R.string.frequency_analysis_fft
+            FrequencyAnalysisMethod.Method.SPECTRUM -> R.string.frequency_analysis_spectrum
+        }
+
     }
 
 }

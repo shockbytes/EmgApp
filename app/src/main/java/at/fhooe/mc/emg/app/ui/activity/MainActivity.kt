@@ -15,6 +15,7 @@ import at.fhooe.mc.emg.app.ui.fragment.MainFragment
 import at.fhooe.mc.emg.app.ui.fragment.dialog.TextEnterDialogFragment
 import at.fhooe.mc.emg.app.view.AndroidEmgView
 import at.fhooe.mc.emg.app.view.OnRenderViewReadyListener
+import at.fhooe.mc.emg.app.view.OnViewReadyListener
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.EmgController
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
@@ -131,8 +132,14 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
 
     override fun showFrequencyAnalysisView(method: FrequencyAnalysisMethod) {
         val fragment = FrequencyAnalysisFragment.newInstance()
+        // Only evaluate method if it is already built!
+        fragment.viewReadyListener =
+                object : OnViewReadyListener {
+                    override fun onReady() {
+                        method.evaluate(fragment)
+                    }
+                }
         showFragmentWithBackstack(fragment)
-        method.evaluate(fragment)
     }
 
     override fun updateStatus(status: String) {
@@ -169,7 +176,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     private fun showSamplingFrequencyDialog() {
 
         val fragment = TextEnterDialogFragment
-                .newInstance("Set sampling frequency", hint= "Frequency in Hz", numbersOnly =  true)
+                .newInstance("Set sampling frequency", hint = "Frequency in Hz", numbersOnly = true)
         fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
             override fun onTextEntered(text: String) {
                 viewCallback.setSamplingFrequency(text.toDouble())
@@ -182,7 +189,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
 
         if (config.isWriteToLogEnabled) {
             val fragment = TextEnterDialogFragment
-                    .newInstance("Save recording as",  hint = "Path")
+                    .newInstance("Save recording as", hint = "Path")
             fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
                 override fun onTextEntered(text: String) {
                     viewCallback.disconnectFromClient(text)

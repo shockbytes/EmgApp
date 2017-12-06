@@ -18,4 +18,6 @@
     <string name="network_ip_address">IP address</string>
     <string name="network_port">Port</string>
     <string name="apply">APPLY</string>
+    <string name="frequency_analysis_fft">Fast Fourier Transform</string>
+    <string name="frequency_analysis_spectrum">Power Spectrum</string>
 </resources>

@@ -5,16 +5,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import at.fhooe.mc.emg.app.R
+import at.fhooe.mc.emg.app.util.AppUtils
+import at.fhooe.mc.emg.app.view.OnViewReadyListener
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisView
 import at.shockbytes.remote.fragment.BaseFragment
 import butterknife.BindView
-import com.jjoe64.graphview.GraphView
-import com.jjoe64.graphview.series.BarGraphSeries
-import com.jjoe64.graphview.series.DataPoint
-
-
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 
 /**
  * @author Martin Macheiner
@@ -22,8 +27,14 @@ import com.jjoe64.graphview.series.DataPoint
  */
 class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
 
-    @BindView(R.id.fragment_frequency_analysis_graphview)
-    protected lateinit var graphView: GraphView
+    @BindView(R.id.fragment_frequency_analysis_chart)
+    protected lateinit var chart: LineChart
+
+
+    @BindView(R.id.fragment_frequency_analysis_title)
+    protected lateinit var txtTitle: TextView
+
+    var viewReadyListener: OnViewReadyListener? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_frequency_analysis, container, false)
@@ -31,25 +42,76 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
 
     override fun showEvaluation(method: FrequencyAnalysisMethod.Method, xData: DoubleArray, yData: DoubleArray) {
 
-        if (xData.size != yData.size) {
+        if (xData.size != yData.size || xData.isEmpty()) {
+            fragmentManager.popBackStack()
             return
         }
 
-        val list: ArrayList<DataPoint> = arrayListOf()
-        (0..xData.size).mapIndexedTo(list) {idx,_ -> DataPoint(xData[idx], yData[idx]) }
-        val series = BarGraphSeries(list.toTypedArray())
-        graphView.addSeries(series)
+        val title = getString(AppUtils.getFrequencyAnalysisTitleByMethod(method))
+        val list = ArrayList<BarEntry>()
+        (0 until xData.size).mapIndexedTo(list) { idx, _ ->
+            BarEntry(xData[idx].toFloat(), yData[idx].toFloat())
+        }
+        val set = createDataSet(title, list)
+
+        // Computation is done on another thread
+        activity.runOnUiThread {
+            txtTitle.text = title
+            chart.data.addDataSet(set)
+            chart.data.notifyDataChanged()
+            chart.notifyDataSetChanged()
+            chart.invalidate()
+        }
     }
 
     override fun setupViews() {
-
-        graphView.viewport.borderColor = Color.WHITE
-        graphView.gridLabelRenderer.gridColor = Color.WHITE
-        graphView.gridLabelRenderer.horizontalAxisTitleColor = Color.WHITE
-        graphView.gridLabelRenderer.verticalAxisTitleColor = Color.WHITE
-        graphView.gridLabelRenderer.horizontalLabelsColor = Color.WHITE
-        graphView.gridLabelRenderer.verticalLabelsColor = Color.WHITE
+        setupChart()
+        viewReadyListener?.onReady()
     }
+
+    private fun setupChart() {
+        chart.description.isEnabled = false
+        chart.setTouchEnabled(true)
+        chart.setPinchZoom(true)
+        chart.setScaleEnabled(true)
+        chart.setDrawGridBackground(false)
+
+        // Axes
+        val xl = chart.xAxis
+        xl.textColor = Color.WHITE
+        xl.setDrawGridLines(false)
+        xl.setAvoidFirstLastClipping(true)
+        xl.isEnabled = true
+        val leftAxis = chart.axisLeft
+        leftAxis.textColor = Color.WHITE
+        leftAxis.axisMinimum = 0f
+        leftAxis.setDrawGridLines(false)
+        val rightAxis = chart.axisRight
+        rightAxis.isEnabled = false
+
+        leftAxis.setDrawLimitLinesBehindData(true)
+
+        // Data
+        val data = LineData()
+        data.setValueTextColor(Color.WHITE)
+        chart.data = data
+
+        // Legend
+        val l = chart.legend
+        l.form = Legend.LegendForm.CIRCLE
+        l.textColor = Color.WHITE
+    }
+
+
+    private fun createDataSet(title: String, yValues: List<Entry>): LineDataSet {
+        val set = LineDataSet(yValues, title)
+        set.axisDependency = YAxis.AxisDependency.LEFT
+        set.setDrawValues(false)
+        set.mode = LineDataSet.Mode.CUBIC_BEZIER
+        set.valueTextSize = 10f
+        return set
+    }
+
 
     companion object {
 

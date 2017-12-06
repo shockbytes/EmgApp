@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
+import at.fhooe.mc.emg.app.view.OnViewReadyListener
 import butterknife.ButterKnife
 import butterknife.Unbinder
 
@@ -13,13 +14,7 @@ import butterknife.Unbinder
  */
 abstract class AndroidConfigView : DialogFragment() {
 
-    @FunctionalInterface
-    interface OnConfigViewReadyListener {
-
-        fun onReady()
-    }
-
-    var viewReadyListener: OnConfigViewReadyListener? = null
+    var viewReadyListener: OnViewReadyListener? = null
 
     private var unbinder: Unbinder? = null
 
