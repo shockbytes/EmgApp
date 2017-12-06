@@ -4,6 +4,7 @@ import android.os.Environment
 import at.fhooe.mc.emg.app.client.bluetooth.BluetoothClientDriver
 import at.fhooe.mc.emg.app.core.AndroidEmgController
 import at.fhooe.mc.emg.app.core.EmgApp
+import at.fhooe.mc.emg.app.tools.conconi.AndroidConconiView
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidBluetoothClientDriverConfigView
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidNetworkClientDriverConfigView
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidSimulationClientDriverConfigView
@@ -48,7 +49,7 @@ class AppModule(private val app: EmgApp) {
     @Provides
     @Singleton
     fun provideTools(): List<@JvmSuppressWildcards Tool> {
-        return arrayListOf(ConconiTool()
+        return arrayListOf(ConconiTool(AndroidConconiView())
                 /* This still depends on JFrame --> PeakDetectionTool() */
                 )
     }

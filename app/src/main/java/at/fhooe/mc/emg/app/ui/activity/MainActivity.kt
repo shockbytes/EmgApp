@@ -2,6 +2,7 @@ package at.fhooe.mc.emg.app.ui.activity
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
             }
             R.id.menu_main_sample_frequency -> showSamplingFrequencyDialog()
             R.id.menu_main_export -> showExportDialogFragment()
+            R.id.menu_main_settings -> showSettings()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -150,6 +152,11 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     }
 
     // --------------------------------------------------------------------
+
+    private fun showSettings() {
+        startActivity(SettingsActivity.newIntent(this),
+                ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle())
+    }
 
     private fun lockOrientation(lock: Boolean) {
         val orientation = if (lock) ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
