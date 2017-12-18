@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     private var menuItemConnect: MenuItem? = null
     private var menuItemDisconnect: MenuItem? = null
     private var menuItemSamplingFrequency: MenuItem? = null
+    private var menuItemDisableVisualView: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +61,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         menuItemConnect = menu?.findItem(R.id.menu_main_connect)
         menuItemDisconnect = menu?.findItem(R.id.menu_main_disconnect)
         menuItemSamplingFrequency = menu?.findItem(R.id.menu_main_sample_frequency)
+        menuItemDisableVisualView = menu?.findItem(R.id.menu_main_disable_visual_view)
 
         // This is the point where all necessary controls are initialized
         attachEmgView()
@@ -78,6 +81,13 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
             R.id.menu_main_disconnect -> {
                 disconnectFromDevice()
                 lockOrientation(false)
+            }
+            R.id.menu_main_disable_visual_view -> {
+                // Inverse logic, because click has to be performed manually by the code
+                val isChecked = menuItemDisableVisualView?.isChecked!!
+                menuItemDisableVisualView?.isChecked = !isChecked
+                viewCallback.setVisualViewEnabled(!isChecked)
+                Log.wtf("EMG", "Is checked ${!isChecked}")
             }
             R.id.menu_main_sample_frequency -> showSamplingFrequencyDialog()
             R.id.menu_main_export -> showExportDialogFragment()
@@ -107,6 +117,7 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
         menuItemDisconnect?.isEnabled = isLocked
         menuItemSamplingFrequency?.isEnabled = isLocked
         menuItemConnect?.isEnabled = !isLocked
+        menuItemDisableVisualView?.isEnabled = !isLocked
     }
 
     override fun setupEmgClientDriverConfigViews(clients: List<EmgClientDriver>) {

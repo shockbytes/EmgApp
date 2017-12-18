@@ -34,6 +34,13 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:checkable="true"
+        android:checked="true"
+        android:id="@+id/menu_main_disable_visual_view"
+        android:title="@string/menu_main_disable_visual_view"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_main_settings"
         android:title="@string/menu_main_settings"
         app:showAsAction="never" />
