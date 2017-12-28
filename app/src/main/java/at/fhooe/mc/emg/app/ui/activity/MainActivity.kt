@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -87,7 +86,6 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
                 val isChecked = menuItemDisableVisualView?.isChecked!!
                 menuItemDisableVisualView?.isChecked = !isChecked
                 viewCallback.setVisualViewEnabled(!isChecked)
-                Log.wtf("EMG", "Is checked ${!isChecked}")
             }
             R.id.menu_main_sample_frequency -> showSamplingFrequencyDialog()
             R.id.menu_main_export -> showExportDialogFragment()
