@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.07"
+        android:textColor="#fff"
         android:background="@color/colorAccent"
         android:fontFamily="sans-serif-light"
         android:gravity="center"
@@ -23,12 +24,13 @@
         android:layout_marginEnd="4dp"
         android:layout_marginStart="4dp"
         android:layout_weight="0.001"
-        android:background="#fff" />
+        android:background="@color/iconColor" />
 
     <ScrollView
         android:id="@+id/fragment_main_scroll_view_console"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="2dp"
         android:layout_weight="0.279">
 
         <TextView
@@ -44,9 +46,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.15"
-        android:background="#212121"
+        android:background="@color/lightBackground"
         android:orientation="horizontal"
+        android:elevation="8dp"
         android:weightSum="1"
+        android:clipToPadding="false"
         tools:ignore="NestedWeights">
 
         <Button

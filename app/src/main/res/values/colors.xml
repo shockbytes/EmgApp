@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorAccent">#F44336</color>
+    <color name="colorAccent">@color/blue</color>
 
     <color name="blueBright">#03A9F4</color>
     <color name="blue">#2196F3</color>
     <color name="blueDark">#1976D2</color>
+
+    <color name="iconColor">#535353</color>
+    <color name="lightBackground">#eee</color>
 
     <color name="error">#F44336</color>
     <color name="okay">#8BC34A</color>

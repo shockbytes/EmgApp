@@ -27,5 +27,5 @@
     <string name="app_version">0.7</string>
     <string name="settings_about_version_title">Version</string>
     <string name="label_settings">Settings</string>
-    <string name="menu_main_disable_visual_view">Disable Visual View</string>
+    <string name="menu_main_enable_visual_view">Enable Visual View</string>
 </resources>

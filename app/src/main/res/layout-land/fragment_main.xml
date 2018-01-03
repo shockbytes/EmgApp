@@ -15,6 +15,7 @@
             android:id="@+id/fragment_main_txt_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             android:background="@color/colorAccent"
             android:fontFamily="sans-serif-light"
             android:gravity="center"
@@ -33,7 +34,7 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="0.001"
-                android:background="#fff" />
+                android:background="@color/iconColor" />
 
             <ScrollView
                 android:id="@+id/fragment_main_scroll_view_console"
@@ -59,7 +60,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.15"
-        android:background="#212121"
+        android:background="@color/lightBackground"
         android:orientation="vertical"
         android:weightSum="1"
         tools:ignore="NestedWeights">
