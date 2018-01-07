@@ -2,16 +2,11 @@ package at.fhooe.mc.emg.app.ui.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
-import at.fhooe.mc.emg.app.view.OnViewReadyListener
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisView
-import at.shockbytes.remote.fragment.BaseFragment
 import butterknife.BindView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
@@ -27,6 +22,8 @@ import com.github.mikephil.charting.data.LineDataSet
  */
 class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
 
+    override val layoutId = R.layout.fragment_frequency_analysis
+
     @BindView(R.id.fragment_frequency_analysis_chart)
     protected lateinit var chart: LineChart
 
@@ -34,11 +31,7 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
     @BindView(R.id.fragment_frequency_analysis_title)
     protected lateinit var txtTitle: TextView
 
-    var viewReadyListener: OnViewReadyListener? = null
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_frequency_analysis, container, false)
-    }
+    private var viewReadyListener: (() -> Unit)? = null
 
     override fun showEvaluation(method: FrequencyAnalysisMethod.Method, xData: DoubleArray, yData: DoubleArray) {
 
@@ -66,7 +59,12 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
 
     override fun setupViews() {
         setupChart()
-        viewReadyListener?.onReady()
+        viewReadyListener?.invoke()
+    }
+
+    fun setOnViewReadyListener(listener: () -> Unit): FrequencyAnalysisFragment {
+        this.viewReadyListener = listener
+        return this
     }
 
     private fun setupChart() {
@@ -101,7 +99,6 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
         l.form = Legend.LegendForm.CIRCLE
         l.textColor = Color.WHITE
     }
-
 
     private fun createDataSet(title: String, yValues: List<Entry>): LineDataSet {
         val set = LineDataSet(yValues, title)

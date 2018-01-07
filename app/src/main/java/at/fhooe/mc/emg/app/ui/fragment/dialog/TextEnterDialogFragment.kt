@@ -18,12 +18,7 @@ import at.fhooe.mc.emg.app.R
  */
 class TextEnterDialogFragment : DialogFragment() {
 
-    interface OnTextEnteredListener {
-
-        fun onTextEntered(text: String)
-    }
-
-    var listener: OnTextEnteredListener? = null
+    private var enterListener: ((String) -> Unit)? = null
 
     private var txt: TextInputEditText? = null
 
@@ -35,13 +30,17 @@ class TextEnterDialogFragment : DialogFragment() {
         val hint = arguments.getString(ARG_HINT)
 
         return AlertDialog.Builder(context)
-                .setPositiveButton(R.string.enter) { _, _ -> listener?.onTextEntered(txt?.text.toString()) }
+                .setPositiveButton(R.string.enter) { _, _ -> enterListener?.invoke(txt?.text.toString()) }
                 .setNegativeButton(android.R.string.cancel) { _, _ -> dismiss() }
                 .setIcon(icon)
                 .setView(buildView(numOnly, hint))
                 .setTitle(title)
                 .create()
+    }
 
+    fun setOnTextEnteredListener(listener: (String) -> Unit) : TextEnterDialogFragment {
+        this.enterListener = listener
+        return this
     }
 
     @SuppressLint("InflateParams")

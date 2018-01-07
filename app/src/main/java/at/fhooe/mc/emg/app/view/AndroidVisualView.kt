@@ -70,6 +70,7 @@ class AndroidVisualView(private val context: Context,
         chart.setPinchZoom(false)
         chart.setScaleEnabled(true)
         chart.setDrawGridBackground(false)
+        chart.legend.textColor = ContextCompat.getColor(context, R.color.legendTextColor)
 
         // Axes
         val xl = chart.xAxis

@@ -4,7 +4,6 @@ import android.support.annotation.LayoutRes
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
-import at.fhooe.mc.emg.app.view.OnViewReadyListener
 import butterknife.ButterKnife
 import butterknife.Unbinder
 
@@ -14,14 +13,14 @@ import butterknife.Unbinder
  */
 abstract class AndroidConfigView : DialogFragment() {
 
-    var viewReadyListener: OnViewReadyListener? = null
+    var viewReadyListener: (()-> Unit)? = null
 
     private var unbinder: Unbinder? = null
 
     protected fun buildView(@LayoutRes id: Int): View {
         val v = LayoutInflater.from(context).inflate(id, null, false)
         unbinder = ButterKnife.bind(this, v)
-        viewReadyListener?.onReady()
+        viewReadyListener?.invoke()
         return v
     }
 

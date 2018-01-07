@@ -7,6 +7,8 @@ Android Application for the EmgFramework project (https://github.com/shockbytes/
 * Implement Bluetooth client
 * Implement Conconi View
 * Implement settings screen
+* Implement Peak detection View
+* Implement Muscle Fatigue detection view
 * ~~Provide data for frequency analysis~~
 * ~~Provide different chart line colors~~
 * ~~Implement chart for visualization~~

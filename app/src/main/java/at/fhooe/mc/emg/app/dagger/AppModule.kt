@@ -15,6 +15,8 @@ import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
 import at.fhooe.mc.emg.core.client.simulation.SimulationClientDriver
 import at.fhooe.mc.emg.core.tools.Tool
 import at.fhooe.mc.emg.core.tools.conconi.ConconiTool
+import at.fhooe.mc.emg.core.tools.fatigue.MuscleFatigueTool
+import at.fhooe.mc.emg.core.tools.peaks.PeakDetectionTool
 import dagger.Module
 import dagger.Provides
 import java.io.File
@@ -49,9 +51,9 @@ class AppModule(private val app: EmgApp) {
     @Provides
     @Singleton
     fun provideTools(): List<@JvmSuppressWildcards Tool> {
-        return arrayListOf(ConconiTool(AndroidConconiView())
-                /* This still depends on JFrame --> PeakDetectionTool() */
-                )
+        return arrayListOf(ConconiTool(AndroidConconiView()),
+                PeakDetectionTool(),
+                MuscleFatigueTool())
     }
 
     @Provides

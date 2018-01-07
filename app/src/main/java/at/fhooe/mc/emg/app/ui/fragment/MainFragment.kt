@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.support.v7.widget.PopupMenu
 import android.text.method.ScrollingMovementMethod
 import android.view.HapticFeedbackConstants
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -18,7 +16,6 @@ import at.fhooe.mc.emg.app.ui.fragment.config.AndroidConfigView
 import at.fhooe.mc.emg.app.util.AppUtils
 import at.fhooe.mc.emg.app.view.AndroidEmgView
 import at.fhooe.mc.emg.app.view.OnRenderViewReadyListener
-import at.fhooe.mc.emg.app.view.OnViewReadyListener
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.EmgController
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
@@ -27,12 +24,11 @@ import at.fhooe.mc.emg.core.tools.Tool
 import at.fhooe.mc.emg.core.util.config.EmgConfig
 import at.fhooe.mc.emg.core.view.EmgViewCallback
 import at.fhooe.mc.emg.core.view.VisualView
-import at.shockbytes.remote.fragment.BaseFragment
-import butterknife.BindView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotterknife.bindView
 import java.util.concurrent.TimeUnit
 
 
@@ -40,32 +36,18 @@ import java.util.concurrent.TimeUnit
  * @author Martin Macheiner
  * Date: 01.12.2017.
  */
+
 class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
+    private val scrollViewConsole: ScrollView by bindView(R.id.fragment_main_scroll_view_console)
 
-    @BindView(R.id.fragment_main_scroll_view_console)
-    protected lateinit var scrollViewConsole: ScrollView
-
-    @BindView(R.id.fragment_main_layout)
-    protected lateinit var layout: LinearLayout
-
-    @BindView(R.id.fragment_main_txt_console)
-    protected lateinit var txtConsole: TextView
-
-    @BindView(R.id.fragment_main_txt_status)
-    protected lateinit var txtStatus: TextView
-
-    @BindView(R.id.fragment_main_btn_clients)
-    protected lateinit var btnClients: Button
-
-    @BindView(R.id.fragment_main_btn_filter)
-    protected lateinit var btnFilter: Button
-
-    @BindView(R.id.fragment_main_btn_analysis)
-    protected lateinit var btnAnalysis: Button
-
-    @BindView(R.id.fragment_main_btn_tools)
-    protected lateinit var btnTools: Button
+    private val layout: LinearLayout by bindView(R.id.fragment_main_layout)
+    private val txtConsole: TextView by bindView(R.id.fragment_main_txt_console)
+    private val txtStatus: TextView by bindView(R.id.fragment_main_txt_status)
+    private val btnClients: Button by bindView(R.id.fragment_main_btn_clients)
+    private val btnFilter: Button by bindView(R.id.fragment_main_btn_filter)
+    private val btnAnalysis: Button by bindView(R.id.fragment_main_btn_analysis)
+    private val btnTools: Button by bindView(R.id.fragment_main_btn_tools)
 
     private var visualView: VisualView<View>? = null
 
@@ -77,10 +59,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
     private var rawDisposable: Disposable? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_main, container, false)
-    }
+    override val layoutId = R.layout.fragment_main
 
     override fun setupViews() {
         txtConsole.movementMethod = ScrollingMovementMethod()
@@ -116,7 +95,6 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
                 .subscribe {
 
                     if (it.size > 0) {
-
                         // Clear every 2.5 seconds
                         if (counter > 10) {
                             txtConsole.text = ""
@@ -175,12 +153,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             val client = AppUtils.getClientDriverByConfigViewName(clients, it.title as String)
             // Workaround for Android, as DialogFragment must be explicitly called!
             // And the ConfigView must be initialized first
-            (client?.configView as? AndroidConfigView)?.viewReadyListener = 
-                    object : OnViewReadyListener {
-                        override fun onReady() {
-                            client?.configView?.show(client)
-                        }
-                    }
+            (client?.configView as? AndroidConfigView)?.viewReadyListener = { client?.configView?.show(client) }
             (client?.configView as? AndroidConfigView)?.show(fragmentManager, "cv-${it.title}")
             true
         }
@@ -240,6 +213,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
         menu.setOnMenuItemClickListener {
             val t: Tool? = AppUtils.getToolByName(tools, it.title as String)
+            // TODO Start UI
             t?.start(controller)
             true
         }

@@ -16,7 +16,6 @@ import at.fhooe.mc.emg.app.ui.fragment.MainFragment
 import at.fhooe.mc.emg.app.ui.fragment.dialog.TextEnterDialogFragment
 import at.fhooe.mc.emg.app.view.AndroidEmgView
 import at.fhooe.mc.emg.app.view.OnRenderViewReadyListener
-import at.fhooe.mc.emg.app.view.OnViewReadyListener
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.EmgController
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
@@ -144,12 +143,9 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     override fun showFrequencyAnalysisView(method: FrequencyAnalysisMethod) {
         val fragment = FrequencyAnalysisFragment.newInstance()
         // Only evaluate method if it is already built!
-        fragment.viewReadyListener =
-                object : OnViewReadyListener {
-                    override fun onReady() {
-                        method.evaluate(fragment)
-                    }
-                }
+        fragment.setOnViewReadyListener {
+            method.evaluate(fragment)
+        }
         showFragmentWithBackstack(fragment)
     }
 
@@ -179,39 +175,30 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     }
 
     private fun showExportDialogFragment() {
-        val fragment = TextEnterDialogFragment
-                .newInstance("Export file as", hint = "Path")
-        fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
-            override fun onTextEntered(text: String) {
-                viewCallback.exportData(text, CsvDataStorage())
-            }
-        }
-        fragment.show(supportFragmentManager, "dialog-export")
+        TextEnterDialogFragment.newInstance("Export file as", hint = "Path")
+                .setOnTextEnteredListener { text ->
+                    viewCallback.exportData(text, CsvDataStorage())
+                }
+                .show(supportFragmentManager, "dialog-export")
     }
 
     private fun showSamplingFrequencyDialog() {
-
-        val fragment = TextEnterDialogFragment
+        TextEnterDialogFragment
                 .newInstance("Set sampling frequency", hint = "Frequency in Hz", numbersOnly = true)
-        fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
-            override fun onTextEntered(text: String) {
-                viewCallback.setSamplingFrequency(text.toDouble())
-            }
-        }
-        fragment.show(supportFragmentManager, "dialog-fs")
+                .setOnTextEnteredListener { text ->
+                    viewCallback.setSamplingFrequency(text.toDouble())
+                }
+                .show(supportFragmentManager, "dialog-fs")
     }
 
     private fun disconnectFromDevice() {
 
         if (config.isWriteToLogEnabled) {
-            val fragment = TextEnterDialogFragment
-                    .newInstance("Save recording as", hint = "Path")
-            fragment.listener = object : TextEnterDialogFragment.OnTextEnteredListener {
-                override fun onTextEntered(text: String) {
-                    viewCallback.disconnectFromClient(text)
-                }
-            }
-            fragment.show(supportFragmentManager, "dialog-save-as")
+            TextEnterDialogFragment.newInstance("Save recording as", hint = "Path")
+                    .setOnTextEnteredListener { text ->
+                        viewCallback.disconnectFromClient(text)
+                    }
+                    .show(supportFragmentManager, "dialog-save-as")
         } else {
             viewCallback.disconnectFromClient(null)
         }
