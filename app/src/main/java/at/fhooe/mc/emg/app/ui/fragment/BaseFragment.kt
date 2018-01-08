@@ -13,6 +13,8 @@ import butterknife.Unbinder
 
 abstract class BaseFragment : Fragment() {
 
+    private var viewReadyListener: (()-> Unit)? = null
+
     private var unbinder: Unbinder? = null
 
     abstract val layoutId: Int
@@ -21,10 +23,16 @@ abstract class BaseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         unbinder = ButterKnife.bind(this, view)
         setupViews()
+        viewReadyListener?.invoke()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(layoutId, container, false)
+    }
+
+    fun setOnViewReadyListener(listener: ()-> Unit): BaseFragment {
+        this.viewReadyListener = listener
+        return this
     }
 
     override fun onDestroyView() {

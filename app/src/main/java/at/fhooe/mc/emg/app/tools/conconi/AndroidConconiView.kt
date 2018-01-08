@@ -1,8 +1,7 @@
 package at.fhooe.mc.emg.app.tools.conconi
 
-import android.util.Log
 import at.fhooe.mc.emg.app.R
-import at.fhooe.mc.emg.app.ui.fragment.BaseFragment
+import at.fhooe.mc.emg.app.ui.fragment.AndroidToolViewFragment
 import at.fhooe.mc.emg.clientdriver.model.EmgData
 import at.fhooe.mc.emg.core.tools.conconi.ConconiView
 import at.fhooe.mc.emg.core.tools.conconi.ConconiViewCallback
@@ -12,18 +11,25 @@ import at.fhooe.mc.emg.core.tools.conconi.ConconiViewCallback
  * Date: 06.12.2017.
  */
 // TODO Implement AndroidConconiView
-class AndroidConconiView : BaseFragment(), ConconiView {
+class AndroidConconiView : AndroidToolViewFragment(), ConconiView {
 
     override val layoutId = R.layout.fragment_conconi_view
 
+    private var viewCallback: ConconiViewCallback? = null
+
     override fun setupViews() {
-        Log.wtf("Emg", "Setup views")
     }
 
-    override fun setup(viewCallback: ConconiViewCallback) {
+    override fun setup(viewCallback: ConconiViewCallback, showViewImmediate: Boolean) {
+        this.viewCallback = viewCallback
 
-        Log.wtf("Emg", "Setup")
+        if (showViewImmediate) {
+            showView()
+        }
+    }
 
+    override fun showView() {
+        showToolView("tv-conconi")
     }
 
     override fun onCountdownTick(seconds: Int) {

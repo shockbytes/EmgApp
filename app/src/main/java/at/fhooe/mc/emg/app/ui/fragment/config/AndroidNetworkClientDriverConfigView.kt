@@ -12,7 +12,7 @@ import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
 import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
-import butterknife.BindView
+import kotterknife.bindView
 
 /**
  * @author Martin Macheiner
@@ -22,12 +22,9 @@ class AndroidNetworkClientDriverConfigView : AndroidConfigView(), EmgClientDrive
 
     override val name: String = "Network Config"
 
-    @BindView(R.id.fragment_client_config_network_txt_ip)
-    protected lateinit var txtIp: TextView
-    @BindView(R.id.fragment_client_config_network_txt_port)
-    protected lateinit var txtPort: TextView
-    @BindView(R.id.fragment_client_config_network_btn_apply)
-    protected lateinit var btnApply: Button
+    private val txtIp: TextView by bindView(R.id.fragment_client_config_network_txt_ip)
+    private val txtPort: TextView by bindView(R.id.fragment_client_config_network_txt_port)
+    private val btnApply: Button by bindView(R.id.fragment_client_config_network_btn_apply)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context)

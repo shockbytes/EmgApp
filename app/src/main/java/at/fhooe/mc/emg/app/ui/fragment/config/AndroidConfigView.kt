@@ -13,7 +13,7 @@ import butterknife.Unbinder
  */
 abstract class AndroidConfigView : DialogFragment() {
 
-    var viewReadyListener: (()-> Unit)? = null
+    private var viewReadyListener: (()-> Unit)? = null
 
     private var unbinder: Unbinder? = null
 
@@ -22,6 +22,11 @@ abstract class AndroidConfigView : DialogFragment() {
         unbinder = ButterKnife.bind(this, v)
         viewReadyListener?.invoke()
         return v
+    }
+
+    fun setOnViewReadyListener(listener: ()-> Unit): AndroidConfigView {
+        this.viewReadyListener = listener
+        return this
     }
 
     override fun onDestroyView() {

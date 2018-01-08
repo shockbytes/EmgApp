@@ -62,11 +62,6 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
         viewReadyListener?.invoke()
     }
 
-    fun setOnViewReadyListener(listener: () -> Unit): FrequencyAnalysisFragment {
-        this.viewReadyListener = listener
-        return this
-    }
-
     private fun setupChart() {
         chart.description.isEnabled = false
         chart.setTouchEnabled(true)

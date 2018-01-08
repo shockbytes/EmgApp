@@ -14,7 +14,7 @@ import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
 import at.fhooe.mc.emg.core.client.simulation.SimulationClientDriver
 import at.fhooe.mc.emg.core.client.simulation.SimulationSource
-import butterknife.BindView
+import kotterknife.bindView
 
 /**
  * @author Martin Macheiner
@@ -24,14 +24,9 @@ class AndroidSimulationClientDriverConfigView : AndroidConfigView(), EmgClientDr
 
     override val name: String = "Simulation Config"
 
-    @BindView(R.id.fragment_client_config_sim_spinner_sources)
-    protected lateinit var spinnerSources: Spinner
-
-    @BindView(R.id.fragment_client_config_sim_cb_endless)
-    protected lateinit var cbEndlessLoop: CheckBox
-
-    @BindView(R.id.fragment_client_config_sim_btn_apply)
-    protected lateinit var btnApply: Button
+    private val spinnerSources: Spinner by bindView(R.id.fragment_client_config_sim_spinner_sources)
+    private val cbEndlessLoop: CheckBox by bindView(R.id.fragment_client_config_sim_cb_endless)
+    private val btnApply: Button by bindView(R.id.fragment_client_config_sim_btn_apply)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context)
@@ -42,7 +37,6 @@ class AndroidSimulationClientDriverConfigView : AndroidConfigView(), EmgClientDr
     }
 
     override fun show(client: EmgClientDriver) {
-
         client as SimulationClientDriver
 
         spinnerSources.adapter = ArrayAdapter<String>(context, R.layout.spinner_sim_sources,

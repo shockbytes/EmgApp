@@ -3,6 +3,7 @@ package at.fhooe.mc.emg.app.ui.fragment
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.PopupMenu
 import android.text.method.ScrollingMovementMethod
 import android.view.HapticFeedbackConstants
@@ -153,8 +154,9 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             val client = AppUtils.getClientDriverByConfigViewName(clients, it.title as String)
             // Workaround for Android, as DialogFragment must be explicitly called!
             // And the ConfigView must be initialized first
-            (client?.configView as? AndroidConfigView)?.viewReadyListener = { client?.configView?.show(client) }
-            (client?.configView as? AndroidConfigView)?.show(fragmentManager, "cv-${it.title}")
+            val configView = client?.configView as? AndroidConfigView
+            configView?.setOnViewReadyListener { client.configView?.show(client) }
+                    ?.show(fragmentManager, "cv-${it.title}")
             true
         }
         btnClients.setOnLongClickListener {
@@ -213,8 +215,12 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
         menu.setOnMenuItemClickListener {
             val t: Tool? = AppUtils.getToolByName(tools, it.title as String)
-            // TODO Start UI
-            t?.start(controller)
+
+            // Workaround for Android! Fragment must be explicitly called!
+            // And the ConfigView must be initialized first
+            val toolView = t?.view as? AndroidToolViewFragment
+            toolView?.setOnViewReadyListener { t.start(controller, false) }
+            showFragmentWithBackStack(toolView, "tv-${t?.name}")
             true
         }
         btnTools.setOnClickListener {
@@ -259,6 +265,14 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             menu.show()
         }
+    }
+
+    private fun showFragmentWithBackStack(fragment: Fragment?, tag: String) {
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.main_container, fragment, tag)
+                .addToBackStack(null)
+                .commit()
     }
 
     companion object {

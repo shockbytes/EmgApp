@@ -8,7 +8,7 @@ def butterknifeVersion = "8.8.1"
 def supportVersion = "26.1.0"
 def rxJavaVersion = "2.1.6"
 def rxAndroidVersion = "2.0.1"
-def emgVersion = "0.8.5"
+def emgVersion = "0.8.6b3"
 
 android {
     compileSdkVersion 26
@@ -18,7 +18,6 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
@@ -47,6 +46,8 @@ dependencies {
     implementation "com.android.support:support-v4:$supportVersion"
     implementation "com.android.support:design:$supportVersion"
     implementation "com.android.support:cardview-v7:$supportVersion"
+
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
