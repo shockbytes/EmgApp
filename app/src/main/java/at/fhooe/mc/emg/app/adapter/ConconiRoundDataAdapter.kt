@@ -3,9 +3,11 @@ package at.fhooe.mc.emg.app.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.core.tools.conconi.ConconiRoundData
 import at.shockbytes.util.adapter.BaseAdapter
+import kotterknife.bindView
 
 /**
  * @author Martin Macheiner
@@ -21,8 +23,18 @@ class ConconiRoundDataAdapter(c: Context,
 
     inner class ViewHolder(itemView: View) : BaseAdapter<ConconiRoundData>.ViewHolder(itemView) {
 
+        private val txtSpeed: TextView by bindView(R.id.item_conconi_txt_speed)
+        private val txtAvg: TextView by bindView(R.id.item_conconi_txt_avg)
+        private val txtPeaks: TextView by bindView(R.id.item_conconi_txt_peaks)
+
         override fun bind(t: ConconiRoundData) {
-            // TODO
+            content = t
+
+            txtSpeed.text = context.getString(R.string.tool_conconi_round_data_speed,
+                    String.format("%.01f", t.speed))
+            txtAvg.text = context.getString(R.string.tool_conconi_round_data_avg,
+                    String.format("%.02f", t.avg))
+            txtPeaks.text = context.getString(R.string.tool_conconi_round_data_peaks, t.peaks)
         }
 
     }

@@ -1,7 +1,7 @@
 package at.fhooe.mc.emg.app.dagger
 
 import at.fhooe.mc.emg.app.client.bluetooth.BluetoothClientDriver
-import at.fhooe.mc.emg.app.core.AndroidEmgController
+import at.fhooe.mc.emg.app.core.AndroidEmgPresenter
 import at.fhooe.mc.emg.app.core.EmgApp
 import at.fhooe.mc.emg.app.tools.conconi.AndroidConconiView
 import at.fhooe.mc.emg.app.tools.fatigue.AndroidMuscleFatigueView
@@ -35,8 +35,8 @@ class EmgModule(private val app: EmgApp) {
     @Provides
     @Singleton
     fun provideEmgController(clients: List<@JvmSuppressWildcards EmgClientDriver>,
-                             tools: List<@JvmSuppressWildcards Tool>): AndroidEmgController {
-        return AndroidEmgController(app.applicationContext, clients, tools,
+                             tools: List<@JvmSuppressWildcards Tool>): AndroidEmgPresenter {
+        return AndroidEmgPresenter(app.applicationContext, clients, tools,
                 SharedPreferencesEmgConfigStorage(app.applicationContext), AppUtils.defaultWindowSize)
     }
 

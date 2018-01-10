@@ -74,12 +74,12 @@ class AndroidVisualView(private val context: Context,
 
         // Axes
         val xl = chart.xAxis
-        xl.textColor = Color.WHITE
+        xl.textColor = Color.DKGRAY
         xl.setDrawGridLines(false)
         xl.setAvoidFirstLastClipping(true)
         xl.isEnabled = true
         val leftAxis = chart.axisLeft
-        leftAxis.textColor = Color.WHITE
+        leftAxis.textColor = Color.DKGRAY
         leftAxis.axisMinimum = 0f
         leftAxis.setDrawGridLines(false)
         val rightAxis = chart.axisRight
@@ -89,13 +89,13 @@ class AndroidVisualView(private val context: Context,
 
         // Data
         val data = LineData()
-        data.setValueTextColor(Color.WHITE)
+        data.setValueTextColor(Color.DKGRAY)
         chart.data = data
 
         // Legend
         val l = chart.legend
         l.form = Legend.LegendForm.CIRCLE
-        l.textColor = Color.WHITE
+        l.textColor = Color.DKGRAY
     }
 
     override fun reset() {

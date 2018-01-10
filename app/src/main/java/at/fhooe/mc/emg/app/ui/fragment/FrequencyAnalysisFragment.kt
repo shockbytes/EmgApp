@@ -2,6 +2,7 @@ package at.fhooe.mc.emg.app.ui.fragment
 
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.widget.TextView
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
@@ -71,12 +72,12 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
 
         // Axes
         val xl = chart.xAxis
-        xl.textColor = Color.WHITE
+        xl.textColor = Color.DKGRAY
         xl.setDrawGridLines(false)
         xl.setAvoidFirstLastClipping(true)
         xl.isEnabled = true
         val leftAxis = chart.axisLeft
-        leftAxis.textColor = Color.WHITE
+        leftAxis.textColor = Color.DKGRAY
         leftAxis.axisMinimum = 0f
         leftAxis.setDrawGridLines(false)
         val rightAxis = chart.axisRight
@@ -86,19 +87,22 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
 
         // Data
         val data = LineData()
-        data.setValueTextColor(Color.WHITE)
+        data.setValueTextColor(Color.DKGRAY)
+
         chart.data = data
 
         // Legend
         val l = chart.legend
         l.form = Legend.LegendForm.CIRCLE
-        l.textColor = Color.WHITE
+        l.textColor = Color.DKGRAY
     }
 
     private fun createDataSet(title: String, yValues: List<Entry>): LineDataSet {
         val set = LineDataSet(yValues, title)
         set.axisDependency = YAxis.AxisDependency.LEFT
         set.setDrawValues(false)
+        set.setCircleColor(ContextCompat.getColor(context, R.color.okay))
+        set.color = ContextCompat.getColor(context, R.color.okay)
         set.mode = LineDataSet.Mode.CUBIC_BEZIER
         set.valueTextSize = 10f
         return set

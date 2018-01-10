@@ -17,7 +17,7 @@ import at.fhooe.mc.emg.app.util.AppUtils
 import at.fhooe.mc.emg.app.view.AndroidEmgView
 import at.fhooe.mc.emg.app.view.OnRenderViewReadyListener
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
-import at.fhooe.mc.emg.core.EmgController
+import at.fhooe.mc.emg.core.EmgPresenter
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
 import at.fhooe.mc.emg.core.tools.Tool
@@ -193,7 +193,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         }
     }
 
-    override fun setupToolsView(tools: List<Tool>, controller: EmgController) {
+    override fun setupToolsView(tools: List<Tool>, presenter: EmgPresenter) {
 
         val menu = PopupMenu(context, btnTools)
         tools.forEach { menu.menu.add(it.name) }
@@ -204,7 +204,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
             // Workaround for Android! Fragment must be explicitly called!
             // And the ConfigView must be initialized first
             val toolView = t?.view as? AndroidToolViewFragment
-            toolView?.setOnViewReadyListener { t.start(controller, false) }
+            toolView?.setOnViewReadyListener { t.start(presenter, false) }
             showFragmentWithBackStack(toolView, "tv-${t?.name}")
             true
         }
@@ -228,6 +228,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
     }
 
     override fun showConnectionError(throwable: Throwable) {
+        throwable.printStackTrace()
         val msg = "${throwable.javaClass.simpleName}: ${throwable.localizedMessage}"
         showToast(msg, true)
     }

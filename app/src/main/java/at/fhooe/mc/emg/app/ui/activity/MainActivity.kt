@@ -8,7 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import at.fhooe.mc.emg.app.R
-import at.fhooe.mc.emg.app.core.AndroidEmgController
+import at.fhooe.mc.emg.app.core.AndroidEmgPresenter
 import at.fhooe.mc.emg.app.dagger.AppComponent
 import at.fhooe.mc.emg.app.ui.activity.core.BaseActivity
 import at.fhooe.mc.emg.app.ui.fragment.FrequencyAnalysisFragment
@@ -17,7 +17,7 @@ import at.fhooe.mc.emg.app.ui.fragment.dialog.TextEnterDialogFragment
 import at.fhooe.mc.emg.app.view.AndroidEmgView
 import at.fhooe.mc.emg.app.view.OnRenderViewReadyListener
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
-import at.fhooe.mc.emg.core.EmgController
+import at.fhooe.mc.emg.core.EmgPresenter
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
 import at.fhooe.mc.emg.core.storage.CsvDataStorage
@@ -25,13 +25,15 @@ import at.fhooe.mc.emg.core.tools.Tool
 import at.fhooe.mc.emg.core.util.config.EmgConfig
 import at.fhooe.mc.emg.core.view.EmgViewCallback
 import at.fhooe.mc.emg.core.view.VisualView
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), AndroidEmgView<View>, OnRenderViewReadyListener {
 
     @Inject
-    protected lateinit var emgController: AndroidEmgController
+    protected lateinit var emgPresenter: AndroidEmgPresenter
 
     private lateinit var viewCallback: EmgViewCallback
 
@@ -108,21 +110,22 @@ class MainActivity : BaseActivity(), AndroidEmgView<View>, OnRenderViewReadyList
     }
 
     override fun reset() {
-        renderView?.reset()
+        Completable.fromAction {
+            renderView?.reset()
+        }.subscribeOn(AndroidSchedulers.mainThread()).subscribe()
     }
 
     override fun lockDeviceControls(isLocked: Boolean) {
 
         // UiThread is needed, because connection error occurs on different thread
-        runOnUiThread {
+        Completable.fromAction {
             renderView?.lockDeviceControls(isLocked)
 
             menuItemDisconnect?.isEnabled = isLocked
             menuItemSamplingFrequency?.isEnabled = isLocked
             menuItemConnect?.isEnabled = !isLocked
             menuItemDisableVisualView?.isEnabled = !isLocked
-        }
-
+        }.subscribeOn(AndroidSchedulers.mainThread()).subscribe()
     }
 
     override fun setupEmgClientDriverConfigViews(clients: List<EmgClientDriver>) {
@@ -137,8 +140,8 @@ class MainActivity : BaseActivity(), AndroidEmgView<View>, OnRenderViewReadyList
         renderView?.setupFilterViews(filter)
     }
 
-    override fun setupToolsView(tools: List<Tool>, controller: EmgController) {
-        renderView?.setupToolsView(tools, controller)
+    override fun setupToolsView(tools: List<Tool>, presenter: EmgPresenter) {
+        renderView?.setupToolsView(tools, presenter)
     }
 
     override fun setupView(viewCallback: EmgViewCallback, config: EmgConfig) {
@@ -189,7 +192,7 @@ class MainActivity : BaseActivity(), AndroidEmgView<View>, OnRenderViewReadyList
 
     private fun attachEmgView() {
         lockDeviceControls(false)
-        emgController.androidEmgView = this
+        emgPresenter.androidEmgView = this
     }
 
     private fun showExportDialogFragment() {

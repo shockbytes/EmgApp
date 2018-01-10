@@ -1,6 +1,7 @@
 package at.fhooe.mc.emg.app.util
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.util.TypedValue
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.clientdriver.ClientCategory
@@ -18,6 +19,8 @@ object AppUtils {
 
     val defaultWindowSize = 512
     val bufferSpan = 500L
+
+    val conconiDirectory = "/conconi"
 
     private val ipAddressRegex = Pattern.compile(
             "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(25[0-5]|2[0-4]"
@@ -89,7 +92,10 @@ object AppUtils {
             FrequencyAnalysisMethod.Method.FFT -> R.string.frequency_analysis_fft
             FrequencyAnalysisMethod.Method.SPECTRUM -> R.string.frequency_analysis_spectrum
         }
+    }
 
+    fun playSound(context: Context, soundId: Int) {
+        MediaPlayer.create(context, soundId).start()
     }
 
 }
