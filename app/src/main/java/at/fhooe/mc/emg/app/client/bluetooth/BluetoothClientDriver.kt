@@ -4,6 +4,7 @@ import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
 import at.fhooe.mc.emg.messaging.EmgMessaging
+import io.reactivex.functions.Consumer
 
 /**
  * @author Martin Macheiner
@@ -12,9 +13,9 @@ import at.fhooe.mc.emg.messaging.EmgMessaging
 // TODO Implement BluetoothClientDriver
 class BluetoothClientDriver(cv: EmgClientDriverConfigView? = null) : EmgClientDriver(cv) {
 
-    override val category: ClientCategory = ClientCategory.BLUETOOTH
+    override val category = ClientCategory.BLUETOOTH
 
-    override val isDataStorageEnabled: Boolean = true
+    override val isDataStorageEnabled = true
 
     override val name: String
         get() = "Bluetooth" // + connected device
@@ -23,7 +24,7 @@ class BluetoothClientDriver(cv: EmgClientDriverConfigView? = null) : EmgClientDr
 
     override val shortName: String = "Bluetooth"
 
-    override fun connect() {
+    override fun connect(errorHandler: Consumer<Throwable>) {
         // Connect to Bluetooth client
     }
 

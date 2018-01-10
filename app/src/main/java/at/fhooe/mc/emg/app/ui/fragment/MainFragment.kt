@@ -1,7 +1,6 @@
 package at.fhooe.mc.emg.app.ui.fragment
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.PopupMenu
@@ -9,7 +8,7 @@ import android.text.method.ScrollingMovementMethod
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import at.fhooe.mc.emg.app.R
@@ -42,7 +41,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
     private val scrollViewConsole: ScrollView by bindView(R.id.fragment_main_scroll_view_console)
 
-    private val layout: LinearLayout by bindView(R.id.fragment_main_layout)
+    private val visualContainer: FrameLayout by bindView(R.id.fragment_main_visualview_container)
     private val txtConsole: TextView by bindView(R.id.fragment_main_txt_console)
     private val txtStatus: TextView by bindView(R.id.fragment_main_txt_status)
     private val btnClients: Button by bindView(R.id.fragment_main_btn_clients)
@@ -77,7 +76,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
     }
 
     override fun onDestroyView() {
-        layout.removeView(visualView?.view)
+        visualContainer.removeAllViews()
         if (rawDisposable?.isDisposed == false) {
             rawDisposable?.dispose()
         }
@@ -112,21 +111,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
     override fun setVisualView(view: VisualView<View>) {
         this.visualView = view
-
-        // Set the correct layout weight and add margin
-        val isPortrait = (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-        val lp = if (isPortrait)
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) else
-            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT)
-
-        val addIdx = if (isPortrait) 1 else 0
-
-        lp.weight = if (isPortrait) 0.5f else 0.75f
-        val m = AppUtils.dp2Pixel(context, 8f)
-        lp.setMargins(m, m, m, m)
-        visualView?.view?.layoutParams = lp
-
-        layout.addView(visualView?.view, addIdx)
+        visualContainer.addView(visualView?.view)
     }
 
     override fun reset() {
@@ -242,6 +227,11 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         txtStatus.text = status
     }
 
+    override fun showConnectionError(throwable: Throwable) {
+        val msg = "${throwable.javaClass.simpleName}: ${throwable.localizedMessage}"
+        showToast(msg, true)
+    }
+
     // --------------------------------------------------------------------
 
     private fun setupAnalysisViews() {
@@ -269,8 +259,9 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
     private fun showFragmentWithBackStack(fragment: Fragment?, tag: String) {
         fragmentManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .replace(R.id.main_container, fragment, tag)
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                        android.R.anim.fade_in, android.R.anim.fade_out)
+                .add(R.id.main_container, fragment, tag)
                 .addToBackStack(null)
                 .commit()
     }

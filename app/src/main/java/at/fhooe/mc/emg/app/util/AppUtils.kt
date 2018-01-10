@@ -45,7 +45,8 @@ object AppUtils {
         }
     }
 
-    fun getClientDriverByName(clients: List<EmgClientDriver>, name: String): EmgClientDriver? {
+    fun getClientDriverByName(clients: List<EmgClientDriver>,
+                              name: String): EmgClientDriver? {
         clients.forEach {
             if (it.shortName == name) {
                 return it
@@ -54,7 +55,8 @@ object AppUtils {
         return null
     }
 
-    fun getClientDriverByConfigViewName(clients: List<EmgClientDriver>, cvName: String): EmgClientDriver? {
+    fun getClientDriverByConfigViewName(clients: List<EmgClientDriver>,
+                                        cvName: String): EmgClientDriver? {
         clients.forEach {
             if (it.configView?.name == cvName) {
                 return it

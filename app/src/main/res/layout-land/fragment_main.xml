@@ -28,6 +28,13 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
+            <FrameLayout
+                android:id="@+id/fragment_main_visualview_container"
+                android:layout_margin="8dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75" />
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

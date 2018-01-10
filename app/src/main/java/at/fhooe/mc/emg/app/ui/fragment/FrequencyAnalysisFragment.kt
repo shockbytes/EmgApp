@@ -7,7 +7,6 @@ import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisView
-import butterknife.BindView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.YAxis
@@ -15,6 +14,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import kotterknife.bindView
 
 /**
  * @author Martin Macheiner
@@ -24,14 +24,8 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
 
     override val layoutId = R.layout.fragment_frequency_analysis
 
-    @BindView(R.id.fragment_frequency_analysis_chart)
-    protected lateinit var chart: LineChart
-
-
-    @BindView(R.id.fragment_frequency_analysis_title)
-    protected lateinit var txtTitle: TextView
-
-    private var viewReadyListener: (() -> Unit)? = null
+    private val chart: LineChart by bindView(R.id.fragment_frequency_analysis_chart)
+    private val txtTitle: TextView by bindView(R.id.fragment_frequency_analysis_title)
 
     override fun showEvaluation(method: FrequencyAnalysisMethod.Method, xData: DoubleArray, yData: DoubleArray) {
 
@@ -59,8 +53,14 @@ class FrequencyAnalysisFragment : BaseFragment(), FrequencyAnalysisView {
 
     override fun setupViews() {
         setupChart()
-        viewReadyListener?.invoke()
     }
+
+    override fun showError(error: Throwable) {
+        val msg =  "${error.javaClass.simpleName}: ${error.localizedMessage}"
+        showToast(msg, true)
+        fragmentManager.popBackStack()
+    }
+
 
     private fun setupChart() {
         chart.description.isEnabled = false

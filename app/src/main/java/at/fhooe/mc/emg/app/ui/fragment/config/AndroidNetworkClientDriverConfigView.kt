@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.widget.Button
-import android.widget.TextView
+import android.widget.EditText
 import android.widget.Toast
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
@@ -12,7 +12,7 @@ import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
 import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
-import kotterknife.bindView
+import butterknife.BindView
 
 /**
  * @author Martin Macheiner
@@ -22,9 +22,14 @@ class AndroidNetworkClientDriverConfigView : AndroidConfigView(), EmgClientDrive
 
     override val name: String = "Network Config"
 
-    private val txtIp: TextView by bindView(R.id.fragment_client_config_network_txt_ip)
-    private val txtPort: TextView by bindView(R.id.fragment_client_config_network_txt_port)
-    private val btnApply: Button by bindView(R.id.fragment_client_config_network_btn_apply)
+    @BindView(R.id.fragment_client_config_network_txt_ip)
+    protected lateinit var editIp: EditText
+
+    @BindView(R.id.fragment_client_config_network_txt_port)
+    protected lateinit var editPort: EditText
+
+    @BindView(R.id.fragment_client_config_network_btn_apply)
+    protected lateinit var btnApply: Button
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context)
@@ -34,18 +39,17 @@ class AndroidNetworkClientDriverConfigView : AndroidConfigView(), EmgClientDrive
                 .create()
     }
 
-
     override fun show(client: EmgClientDriver) {
 
         client as NetworkClientDriver
 
-        txtIp.text = client.ip
-        txtPort.text = client.port.toString()
+        editIp.setText(client.ip)
+        editPort.setText(client.port.toString())
 
         btnApply.setOnClickListener {
 
-            val port = txtPort.text.toString().toInt()
-            val ip = txtIp.text.toString()
+            val port = editPort.text.toString().toInt()
+            val ip = editIp.text.toString()
             if (AppUtils.validateIAddress(ip)) {
                 client.setSocketOptions(ip, port)
                 dismiss()

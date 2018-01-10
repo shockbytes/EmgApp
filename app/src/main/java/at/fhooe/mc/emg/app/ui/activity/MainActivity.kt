@@ -4,13 +4,13 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.core.AndroidEmgController
-import at.fhooe.mc.emg.app.core.EmgApp
+import at.fhooe.mc.emg.app.dagger.AppComponent
+import at.fhooe.mc.emg.app.ui.activity.core.BaseActivity
 import at.fhooe.mc.emg.app.ui.fragment.FrequencyAnalysisFragment
 import at.fhooe.mc.emg.app.ui.fragment.MainFragment
 import at.fhooe.mc.emg.app.ui.fragment.dialog.TextEnterDialogFragment
@@ -28,7 +28,7 @@ import at.fhooe.mc.emg.core.view.VisualView
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewReadyListener {
+class MainActivity : BaseActivity(), AndroidEmgView<View>, OnRenderViewReadyListener {
 
     @Inject
     protected lateinit var emgController: AndroidEmgController
@@ -49,8 +49,11 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        (application as EmgApp).appComponent.inject(this)
         showRenderView(savedInstanceState)
+    }
+
+    override fun injectToGraph(appComponent: AppComponent) {
+        appComponent.inject(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -109,12 +112,17 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     }
 
     override fun lockDeviceControls(isLocked: Boolean) {
-        renderView?.lockDeviceControls(isLocked)
 
-        menuItemDisconnect?.isEnabled = isLocked
-        menuItemSamplingFrequency?.isEnabled = isLocked
-        menuItemConnect?.isEnabled = !isLocked
-        menuItemDisableVisualView?.isEnabled = !isLocked
+        // UiThread is needed, because connection error occurs on different thread
+        runOnUiThread {
+            renderView?.lockDeviceControls(isLocked)
+
+            menuItemDisconnect?.isEnabled = isLocked
+            menuItemSamplingFrequency?.isEnabled = isLocked
+            menuItemConnect?.isEnabled = !isLocked
+            menuItemDisableVisualView?.isEnabled = !isLocked
+        }
+
     }
 
     override fun setupEmgClientDriverConfigViews(clients: List<EmgClientDriver>) {
@@ -150,7 +158,17 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
     }
 
     override fun updateStatus(status: String) {
-        renderView?.updateStatus(status)
+        // UiThread is needed, because connection error occurs on different thread
+        runOnUiThread {
+            renderView?.updateStatus(status)
+        }
+    }
+
+    override fun showConnectionError(throwable: Throwable) {
+        // UiThread is needed, because connection error occurs on different thread
+        runOnUiThread {
+            renderView?.showConnectionError(throwable)
+        }
     }
 
     override fun onRenderViewReady() {
@@ -228,8 +246,9 @@ class MainActivity : AppCompatActivity(), AndroidEmgView<View>, OnRenderViewRead
 
     private fun showFragmentWithBackstack(fragment: Fragment, tag: String? = null) {
         supportFragmentManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .replace(R.id.main_container, fragment, tag)
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                        android.R.anim.fade_in, android.R.anim.fade_out)
+                .add(R.id.main_container, fragment, tag)
                 .addToBackStack(null)
                 .commit()
     }

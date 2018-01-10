@@ -18,6 +18,13 @@
         android:gravity="center"
         android:textSize="16sp" />
 
+    <FrameLayout
+        android:id="@+id/fragment_main_visualview_container"
+        android:layout_margin="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

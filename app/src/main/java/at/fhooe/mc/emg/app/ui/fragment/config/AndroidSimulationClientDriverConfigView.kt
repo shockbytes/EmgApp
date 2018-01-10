@@ -14,7 +14,7 @@ import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
 import at.fhooe.mc.emg.core.client.simulation.SimulationClientDriver
 import at.fhooe.mc.emg.core.client.simulation.SimulationSource
-import kotterknife.bindView
+import butterknife.BindView
 
 /**
  * @author Martin Macheiner
@@ -24,9 +24,14 @@ class AndroidSimulationClientDriverConfigView : AndroidConfigView(), EmgClientDr
 
     override val name: String = "Simulation Config"
 
-    private val spinnerSources: Spinner by bindView(R.id.fragment_client_config_sim_spinner_sources)
-    private val cbEndlessLoop: CheckBox by bindView(R.id.fragment_client_config_sim_cb_endless)
-    private val btnApply: Button by bindView(R.id.fragment_client_config_sim_btn_apply)
+    @BindView(R.id.fragment_client_config_sim_spinner_sources)
+    protected lateinit var spinnerSources: Spinner
+
+    @BindView(R.id.fragment_client_config_sim_cb_endless)
+    protected lateinit var cbEndlessLoop: CheckBox
+
+    @BindView(R.id.fragment_client_config_sim_btn_apply)
+    protected lateinit var btnApply: Button
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context)
@@ -41,22 +46,25 @@ class AndroidSimulationClientDriverConfigView : AndroidConfigView(), EmgClientDr
 
         spinnerSources.adapter = ArrayAdapter<String>(context, R.layout.spinner_sim_sources,
                 client.simulationSources.map { s -> s.name })
-
         spinnerSources.setSelection(findSimulationSourceIndexByName(client.simulationSources,
                 client.simulationSource?.name), true)
 
-        cbEndlessLoop.isSelected = client.isEndlessLoopEnabled
+        cbEndlessLoop.isChecked = client.isEndlessLoopEnabled
 
         btnApply.setOnClickListener {
-            client.simulationSource = findSimulationSourceByName(client.simulationSources,
-                    spinnerSources.selectedItem as String)
-            client.isEndlessLoopEnabled = cbEndlessLoop.isSelected
+
+            val simSrc = findSimulationSourceByName(client.simulationSources,
+                    spinnerSources.selectedItem as? String)
+            if (simSrc != null) {
+                client.simulationSource = simSrc
+            }
+            client.isEndlessLoopEnabled = cbEndlessLoop.isChecked
             dismiss()
         }
     }
 
     private fun findSimulationSourceByName(sources: List<SimulationSource>,
-                                           name: String): SimulationSource? {
+                                           name: String?): SimulationSource? {
         sources.forEach {
             if (it.name == name) {
                 return it
