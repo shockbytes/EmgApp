@@ -4,6 +4,7 @@ import android.app.Application
 import at.fhooe.mc.emg.app.dagger.AppComponent
 import at.fhooe.mc.emg.app.dagger.AppModule
 import at.fhooe.mc.emg.app.dagger.DaggerAppComponent
+import at.fhooe.mc.emg.app.dagger.EmgModule
 
 /**
  * @author Martin Macheiner
@@ -18,6 +19,7 @@ class EmgApp : Application() {
 
         appComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
+                .emgModule(EmgModule(this))
                 .build()
     }
 

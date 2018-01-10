@@ -10,7 +10,7 @@ def rxJavaVersion = "2.1.6"
 def rxAndroidVersion = "2.0.1"
 def rxBindingsVersion = "2.0.0"
 def shockUtilVersion = "2.1.0"
-def emgVersion = "0.9.0"
+def emgVersion = "0.9.1"
 
 android {
     compileSdkVersion 26
