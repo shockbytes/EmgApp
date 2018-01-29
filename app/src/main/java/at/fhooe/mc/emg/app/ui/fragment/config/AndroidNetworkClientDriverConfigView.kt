@@ -40,7 +40,6 @@ class AndroidNetworkClientDriverConfigView : AndroidConfigView(), EmgClientDrive
     }
 
     override fun show(client: EmgClientDriver) {
-
         client as NetworkClientDriver
 
         editIp.setText(client.ip)
@@ -50,7 +49,7 @@ class AndroidNetworkClientDriverConfigView : AndroidConfigView(), EmgClientDrive
 
             val port = editPort.text.toString().toInt()
             val ip = editIp.text.toString()
-            if (AppUtils.validateIAddress(ip)) {
+            if (AppUtils.validateIpAddress(ip)) {
                 client.setSocketOptions(ip, port)
                 dismiss()
             } else {

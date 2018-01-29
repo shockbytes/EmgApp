@@ -152,7 +152,7 @@ class AndroidConconiView : AndroidToolViewFragment(), ConconiView {
     }
 
     private fun updateChart(data: ConconiRoundData, round: Int) {
-        addChartEntry(Entry(round.toFloat(), data.avg.toFloat()))
+        addChartEntry(Entry(round.toFloat(), data.rms.toFloat()))
     }
 
     private fun updateButtonStates(isEnabled: Boolean) {

@@ -1,6 +1,6 @@
 package at.fhooe.mc.emg.app.dagger
 
-import at.fhooe.mc.emg.app.client.bluetooth.BluetoothClientDriver
+import at.fhooe.mc.emg.app.client.bluetooth.AndroidBluetoothClientDriver
 import at.fhooe.mc.emg.app.core.AndroidEmgPresenter
 import at.fhooe.mc.emg.app.core.EmgApp
 import at.fhooe.mc.emg.app.tools.conconi.AndroidConconiView
@@ -47,7 +47,8 @@ class EmgModule(private val app: EmgApp) {
         return arrayListOf(
                 SimulationClientDriver(AndroidSimulationClientDriverConfigView(), simulationFolder),
                 NetworkClientDriver(AndroidNetworkClientDriverConfigView()),
-                BluetoothClientDriver(AndroidBluetoothClientDriverConfigView()))
+                AndroidBluetoothClientDriver(app.applicationContext,
+                        AndroidBluetoothClientDriverConfigView()))
     }
 
     @Provides

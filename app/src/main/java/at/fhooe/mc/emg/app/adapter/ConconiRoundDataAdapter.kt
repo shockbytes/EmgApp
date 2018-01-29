@@ -32,8 +32,8 @@ class ConconiRoundDataAdapter(c: Context,
 
             txtSpeed.text = context.getString(R.string.tool_conconi_round_data_speed,
                     String.format("%.01f", t.speed))
-            txtAvg.text = context.getString(R.string.tool_conconi_round_data_avg,
-                    String.format("%.02f", t.avg))
+            txtAvg.text = context.getString(R.string.tool_conconi_round_data_rms,
+                    String.format("%.02f", t.rms))
             txtPeaks.text = context.getString(R.string.tool_conconi_round_data_peaks, t.peaks)
         }
 

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Emg App</string>
-    <string name="app_version">0.9.3</string>
+    <string name="app_version">0.9.7</string>
 
     <string name="status_not_connected">Not connected</string>
     <string name="menu_main_connect">Connect</string>
@@ -42,6 +42,8 @@
     <string name="tool_conconi_test_finished">Test finished!</string>
     <string name="dialog_pick_file">Pick a file</string>
     <string name="tool_conconi_round_data_speed">Speed\n\n%s km/h</string>
-    <string name="tool_conconi_round_data_avg">Average\n\n%s</string>
+    <string name="tool_conconi_round_data_rms">RMS\n\n%s</string>
     <string name="tool_conconi_round_data_peaks">Peaks\n\n%d</string>
+    <string name="bluetooth_mac">Remote bluetooth MAC</string>
+    <string name="uuid">UUID</string>
 </resources>
