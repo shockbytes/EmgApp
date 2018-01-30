@@ -16,6 +16,9 @@
     <color name="error">#F44336</color>
     <color name="okay">#8BC34A</color>
 
+    <color name="green">#8BC34A</color>
+    <color name="orange">#FF9800</color>
+
     <array name="chart_colors">
 
         <!-- 1. channel -->

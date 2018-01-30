@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Emg App</string>
-    <string name="app_version">0.9.7</string>
+    <string name="app_version">0.9.8</string>
 
     <string name="status_not_connected">Not connected</string>
     <string name="menu_main_connect">Connect</string>
@@ -32,6 +32,7 @@
     <string name="tool_conconi_title">Conconi Test</string>
     <string name="tool_muscle_fatigue_title">Muscle fatigue</string>
     <string name="tool_peaks_title">Peak detection</string>
+    <string name="tool_peaks_title_detected">Peak detection (%d)</string>
     <string name="load">Load</string>
     <string name="save">Save</string>
     <string name="start">Start</string>
