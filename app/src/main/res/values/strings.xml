@@ -47,4 +47,6 @@
     <string name="tool_conconi_round_data_peaks">Peaks\n\n%d</string>
     <string name="bluetooth_mac">Remote bluetooth MAC</string>
     <string name="uuid">UUID</string>
+    <string name="parameter">Parameter</string>
+    <string name="compute">Compute</string>
 </resources>

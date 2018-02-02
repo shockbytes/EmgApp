@@ -85,7 +85,8 @@ class AndroidPeakDetectionView : AndroidToolViewFragment(), PeakDetectionView {
     }
 
     @OnClick(R.id.fragment_peaks_btn_settings)
-    protected fun onClickSettings() {
+    protected fun onClickSettings(v: View) {
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         showToast("Coming soon...")
     }
 

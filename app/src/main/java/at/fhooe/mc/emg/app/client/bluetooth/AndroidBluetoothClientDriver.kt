@@ -56,7 +56,7 @@ class AndroidBluetoothClientDriver(context: Context,
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({
-                        deviceInfo = "${it.remoteDevice.name} / ${it.remoteDevice.address}"
+                        deviceInfo = it.remoteDevice.name
                         setupBluetoothConnection(it)
                         successHandler.run()
                     }, {
