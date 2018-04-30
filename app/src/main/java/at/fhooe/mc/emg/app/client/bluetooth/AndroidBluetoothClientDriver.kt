@@ -7,7 +7,9 @@ import android.content.Context
 import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
-import at.fhooe.mc.emg.messaging.EmgMessaging
+import at.fhooe.mc.emg.messaging.EmgMessageParser
+import at.fhooe.mc.emg.messaging.MessageParser
+import at.fhooe.mc.emg.messaging.model.EmgPacket
 import com.github.ivbaranov.rxbluetooth.BluetoothConnection
 import com.github.ivbaranov.rxbluetooth.RxBluetooth
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,12 +33,12 @@ class AndroidBluetoothClientDriver(context: Context,
     override val name: String
         get() = "Bluetooth device @ $deviceInfo"
 
-    override val protocolVersion: EmgMessaging.ProtocolVersion = EmgMessaging.ProtocolVersion.V1
+    override var msgParser: MessageParser<EmgPacket> = EmgMessageParser(MessageParser.ProtocolVersion.V1)
 
     override val shortName: String = "Bluetooth"
 
     // Those two properties can be changed in the ConfigView, therefore they aren't private
-    var remoteDeviceMacAddress: String? = "D4:63:C6:39:DD:23" // TODO Change default to RP3
+    var remoteDeviceMacAddress: String? = "22:22:20:E8:93:47"
     var uuid: UUID = UUID.fromString("5f77cdab-8f48-4784-9958-d2736f4727c5")
 
     private var deviceInfo: String? = null
@@ -75,7 +77,7 @@ class AndroidBluetoothClientDriver(context: Context,
     }
 
     override fun sendSamplingFrequencyToClient() {
-        connection?.send(EmgMessaging.buildFrequencyMessage(samplingFrequency))
+        connection?.send(msgParser.buildFrequencyMessage(samplingFrequency))
     }
 
     fun setBluetoothOptions(remoteMac: String, uuidString: String) {

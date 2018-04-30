@@ -8,10 +8,10 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.ui.fragment.AndroidToolViewFragment
-import at.fhooe.mc.emg.core.tools.peaks.Peak
-import at.fhooe.mc.emg.core.tools.peaks.PeakDetectionView
-import at.fhooe.mc.emg.core.tools.peaks.PeakDetectionViewCallback
-import at.fhooe.mc.emg.core.tools.peaks.PeakDetector
+import at.fhooe.mc.emg.core.tool.peaks.Peak
+import at.fhooe.mc.emg.core.tool.peaks.PeakDetectionToolView
+import at.fhooe.mc.emg.core.tool.peaks.PeakDetectionToolViewCallback
+import at.fhooe.mc.emg.core.tool.peaks.PeakDetector
 import butterknife.OnClick
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
@@ -26,9 +26,9 @@ import kotterknife.bindView
  * @author Martin Macheiner
  * Date: 08.01.2017.
  */
-class AndroidPeakDetectionView : AndroidToolViewFragment(), PeakDetectionView {
+class AndroidPeakDetectionView : AndroidToolViewFragment(), PeakDetectionToolView {
 
-    private var viewCallback: PeakDetectionViewCallback? = null
+    private var viewCallback: PeakDetectionToolViewCallback? = null
 
     private val txtHeader: TextView by bindView(R.id.fragment_peak_detection_txt_header)
     private val txtListOutput: TextView by bindView(R.id.fragment_peaks_txt_output)
@@ -45,8 +45,8 @@ class AndroidPeakDetectionView : AndroidToolViewFragment(), PeakDetectionView {
         showToolView("tv-peak-detection")
     }
 
-    override fun setup(viewCallback: PeakDetectionViewCallback, showViewImmediate: Boolean) {
-        this.viewCallback = viewCallback
+    override fun setup(toolViewCallback: PeakDetectionToolViewCallback, showViewImmediate: Boolean) {
+        this.viewCallback = toolViewCallback
 
         if (showViewImmediate) {
             showView()
@@ -80,8 +80,10 @@ class AndroidPeakDetectionView : AndroidToolViewFragment(), PeakDetectionView {
     protected fun onClickCompute(v: View) {
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         progressBar.animate().alpha(1f).start()
-        viewCallback?.compute(PeakDetector.defaultWidth, PeakDetector.defaultThreshold,
+        viewCallback?.updateParameter(PeakDetector.defaultWidth, PeakDetector.defaultThreshold,
                 PeakDetector.defaultDecayRate, PeakDetector.defaultIsRelative)
+
+        viewCallback?.computeManually()
     }
 
     @OnClick(R.id.fragment_peaks_btn_settings)

@@ -11,7 +11,6 @@ import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.core.AndroidEmgPresenter
 import at.fhooe.mc.emg.app.dagger.AppComponent
 import at.fhooe.mc.emg.app.ui.activity.core.BaseActivity
-import at.fhooe.mc.emg.app.ui.fragment.FrequencyAnalysisFragment
 import at.fhooe.mc.emg.app.ui.fragment.MainFragment
 import at.fhooe.mc.emg.app.ui.fragment.dialog.TextEnterDialogFragment
 import at.fhooe.mc.emg.app.view.AndroidEmgView
@@ -20,9 +19,9 @@ import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.EmgPresenter
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
-import at.fhooe.mc.emg.core.storage.CsvDataStorage
-import at.fhooe.mc.emg.core.tools.Tool
-import at.fhooe.mc.emg.core.util.config.EmgConfig
+import at.fhooe.mc.emg.core.storage.CsvEmgDataStorage
+import at.fhooe.mc.emg.core.tool.Tool
+import at.fhooe.mc.emg.core.util.EmgConfig
 import at.fhooe.mc.emg.core.view.EmgViewCallback
 import at.fhooe.mc.emg.core.view.VisualView
 import io.reactivex.Completable
@@ -151,13 +150,12 @@ class MainActivity : BaseActivity(), AndroidEmgView<View>, OnRenderViewReadyList
         renderView?.setupView(viewCallback, config)
     }
 
-    override fun showFrequencyAnalysisView(method: FrequencyAnalysisMethod) {
-        val fragment = FrequencyAnalysisFragment.newInstance()
-        // Only evaluate method if it is already built!
-        fragment.setOnViewReadyListener {
-            method.evaluate(fragment)
-        }
-        showFragmentWithBackstack(fragment)
+    override fun setupFrequencyAnalysisMethods(methods: List<FrequencyAnalysisMethod>) {
+        renderView?.setupFrequencyAnalysisMethods(methods)
+    }
+
+    override fun showFrequencyAnalysisView(method: FrequencyAnalysisMethod, data: DoubleArray) {
+        renderView?.showFrequencyAnalysisView(method, data)
     }
 
     override fun updateStatus(status: String) {
@@ -198,7 +196,7 @@ class MainActivity : BaseActivity(), AndroidEmgView<View>, OnRenderViewReadyList
     private fun showExportDialogFragment() {
         TextEnterDialogFragment.newInstance("Export file as", hint = "Path")
                 .setOnTextEnteredListener { text ->
-                    viewCallback.exportData(text, CsvDataStorage())
+                    viewCallback.exportData(text, CsvEmgDataStorage())
                 }
                 .show(supportFragmentManager, "dialog-export")
     }

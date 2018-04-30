@@ -14,9 +14,9 @@ import at.fhooe.mc.emg.app.ui.fragment.AndroidToolViewFragment
 import at.fhooe.mc.emg.app.ui.fragment.dialog.PickFilesDialogFragment
 import at.fhooe.mc.emg.app.ui.fragment.dialog.TextEnterDialogFragment
 import at.fhooe.mc.emg.app.util.AppUtils
-import at.fhooe.mc.emg.core.tools.conconi.ConconiRoundData
-import at.fhooe.mc.emg.core.tools.conconi.ConconiView
-import at.fhooe.mc.emg.core.tools.conconi.ConconiViewCallback
+import at.fhooe.mc.emg.core.tool.conconi.ConconiRoundData
+import at.fhooe.mc.emg.core.tool.conconi.ConconiToolView
+import at.fhooe.mc.emg.core.tool.conconi.ConconiToolViewCallback
 import at.shockbytes.util.view.EqualSpaceItemDecoration
 import butterknife.OnClick
 import com.github.mikephil.charting.charts.LineChart
@@ -34,15 +34,15 @@ import kotterknife.bindView
 
 
 /**
- * @author Martin Macheiner
- * Date: 06.12.2017.
+ * Author:  Martin Macheiner
+ * Date:    06.12.2017.
  */
 
-class AndroidConconiView : AndroidToolViewFragment(), ConconiView {
+class AndroidConconiView : AndroidToolViewFragment(), ConconiToolView {
 
     override val layoutId = R.layout.fragment_conconi_view
 
-    private var viewCallback: ConconiViewCallback? = null
+    private var viewCallback: ConconiToolViewCallback? = null
 
     private val btnStartStop: Button by bindView(R.id.fragment_conconi_btn_start)
     private val btnLoad: Button by bindView(R.id.fragment_conconi_btn_load)
@@ -68,8 +68,8 @@ class AndroidConconiView : AndroidToolViewFragment(), ConconiView {
         setupChart()
     }
 
-    override fun setup(viewCallback: ConconiViewCallback, showViewImmediate: Boolean) {
-        this.viewCallback = viewCallback
+    override fun setup(toolViewCallback: ConconiToolViewCallback, showViewImmediate: Boolean) {
+        this.viewCallback = toolViewCallback
 
         if (showViewImmediate) {
             showView()

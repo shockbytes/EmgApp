@@ -20,8 +20,8 @@ import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.EmgPresenter
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
-import at.fhooe.mc.emg.core.tools.Tool
-import at.fhooe.mc.emg.core.util.config.EmgConfig
+import at.fhooe.mc.emg.core.tool.Tool
+import at.fhooe.mc.emg.core.util.EmgConfig
 import at.fhooe.mc.emg.core.view.EmgViewCallback
 import at.fhooe.mc.emg.core.view.VisualView
 import io.reactivex.Observable
@@ -64,7 +64,6 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
     override fun setupViews() {
         txtConsole.movementMethod = ScrollingMovementMethod()
         txtStatus.text = getString(R.string.status_not_connected)
-        setupAnalysisViews()
 
         // Inform MainActivity, that we are now ready to receive callbacks
         renderViewListener?.onRenderViewReady()
@@ -203,7 +202,7 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
 
             // Workaround for Android! Fragment must be explicitly called!
             // And the ConfigView must be initialized first
-            val toolView = t?.view as? AndroidToolViewFragment
+            val toolView = t?.toolView as? AndroidToolViewFragment
             toolView?.setOnViewReadyListener { t.start(presenter, false) }
             showFragmentWithBackStack(toolView, "tv-${t?.name}")
             true
@@ -219,8 +218,34 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
         this.config = config
     }
 
-    override fun showFrequencyAnalysisView(method: FrequencyAnalysisMethod) {
-        // Will be handled in parent AndroidEmgView
+    override fun setupFrequencyAnalysisMethods(methods: List<FrequencyAnalysisMethod>) {
+
+        val menu = PopupMenu(context, btnAnalysis)
+        // menu.menuInflater.inflate(R.menu.menu_analysis, menu.menu)
+        methods.forEach { menu.menu.add(it.name) }
+        menu.setOnMenuItemClickListener {
+            val method: FrequencyAnalysisMethod? = AppUtils.getMethodByName(methods, it.title as String)
+            if (method != null) {
+                viewCallback.requestFrequencyAnalysisView(method)
+            }
+            true
+        }
+        btnAnalysis.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            menu.show()
+        }
+
+    }
+
+    override fun showFrequencyAnalysisView(method: FrequencyAnalysisMethod, data: DoubleArray) {
+
+        // Workaround for Android! Fragment must be explicitly called!
+        // And the ConfigView must be initialized first
+        val view = method.view as? FrequencyAnalysisFragment
+        view?.setOnViewReadyListener {
+            method.calculate(data)
+        }
+        showFragmentWithBackStack(view, "famv-${method.name}")
     }
 
     override fun updateStatus(status: String) {
@@ -234,29 +259,6 @@ class MainFragment : BaseFragment(), AndroidEmgView<View> {
     }
 
     // --------------------------------------------------------------------
-
-    private fun setupAnalysisViews() {
-
-        val menu = PopupMenu(context, btnAnalysis)
-        menu.menuInflater.inflate(R.menu.menu_analysis, menu.menu)
-        menu.setOnMenuItemClickListener {
-
-            when (it.itemId) {
-
-                R.id.menu_analysis_fft -> {
-                    viewCallback.requestFrequencyAnalysisView(FrequencyAnalysisMethod.Method.FFT)
-                }
-                R.id.menu_analysis_power_spectrum -> {
-                    viewCallback.requestFrequencyAnalysisView(FrequencyAnalysisMethod.Method.SPECTRUM)
-                }
-            }
-            true
-        }
-        btnAnalysis.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            menu.show()
-        }
-    }
 
     private fun showFragmentWithBackStack(fragment: Fragment?, tag: String) {
         fragmentManager.beginTransaction()

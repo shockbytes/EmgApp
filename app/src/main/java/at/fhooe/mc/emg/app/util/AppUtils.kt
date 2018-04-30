@@ -8,12 +8,12 @@ import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
-import at.fhooe.mc.emg.core.tools.Tool
+import at.fhooe.mc.emg.core.tool.Tool
 import java.util.regex.Pattern
 
 /**
- * @author Martin Macheiner
- * Date: 01.12.2017.
+ * Author:  Martin Macheiner
+ * Date:    01.12.2017.
  */
 object AppUtils {
 
@@ -50,49 +50,27 @@ object AppUtils {
 
     fun getClientDriverByName(clients: List<EmgClientDriver>,
                               name: String): EmgClientDriver? {
-        clients.forEach {
-            if (it.shortName == name) {
-                return it
-            }
-        }
-        return null
+        return clients.find { it.shortName == name }
     }
 
     fun getClientDriverByConfigViewName(clients: List<EmgClientDriver>,
                                         cvName: String): EmgClientDriver? {
-        clients.forEach {
-            if (it.configView?.name == cvName) {
-                return it
-            }
-        }
-        return null
+        return clients.find { it.configView?.name == cvName }
     }
 
     fun getFilterByName(filter: List<Filter>, name: String): Filter? {
-        filter.forEach {
-            if (it.name == name) {
-                return it
-            }
-        }
-        return null
+        return filter.find { it.name == name }
     }
 
     fun getToolByName(tools: List<Tool>, name: String): Tool? {
-        tools.forEach {
-            if (it.name == name) {
-                return it
-            }
-        }
-        return null
+        return tools.find { it.name == name }
     }
 
-    fun getFrequencyAnalysisTitleByMethod(method: FrequencyAnalysisMethod.Method): Int {
-
-        return when(method) {
-            FrequencyAnalysisMethod.Method.FFT -> R.string.frequency_analysis_fft
-            FrequencyAnalysisMethod.Method.SPECTRUM -> R.string.frequency_analysis_spectrum
-        }
+    fun getMethodByName(methods: List<FrequencyAnalysisMethod>,
+                        name: String): FrequencyAnalysisMethod? {
+        return methods.find { it.name == name }
     }
+
 
     fun playSound(context: Context, soundId: Int) {
         MediaPlayer.create(context, soundId).start()

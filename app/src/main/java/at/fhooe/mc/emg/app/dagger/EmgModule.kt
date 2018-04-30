@@ -6,19 +6,26 @@ import at.fhooe.mc.emg.app.core.EmgApp
 import at.fhooe.mc.emg.app.tools.conconi.AndroidConconiView
 import at.fhooe.mc.emg.app.tools.fatigue.AndroidMuscleFatigueView
 import at.fhooe.mc.emg.app.tools.peaks.AndroidPeakDetectionView
+import at.fhooe.mc.emg.app.ui.fragment.FrequencyAnalysisFragment
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidBluetoothClientDriverConfigView
+import at.fhooe.mc.emg.app.ui.fragment.config.AndroidMqttClientDriverConfigView
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidNetworkClientDriverConfigView
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidSimulationClientDriverConfigView
 import at.fhooe.mc.emg.app.util.AppUtils
 import at.fhooe.mc.emg.app.util.SharedPreferencesEmgConfigStorage
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
+import at.fhooe.mc.emg.core.analysis.FftFrequencyAnalysisMethod
+import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
+import at.fhooe.mc.emg.core.analysis.PowerSpectrumAnalysisMethod
+import at.fhooe.mc.emg.core.client.mqtt.MqttClientDriver
 import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
 import at.fhooe.mc.emg.core.client.simulation.SimulationClientDriver
+import at.fhooe.mc.emg.core.filter.*
 import at.fhooe.mc.emg.core.storage.FileStorage
-import at.fhooe.mc.emg.core.tools.Tool
-import at.fhooe.mc.emg.core.tools.conconi.ConconiTool
-import at.fhooe.mc.emg.core.tools.fatigue.MuscleFatigueTool
-import at.fhooe.mc.emg.core.tools.peaks.PeakDetectionTool
+import at.fhooe.mc.emg.core.tool.Tool
+import at.fhooe.mc.emg.core.tool.conconi.ConconiTool
+import at.fhooe.mc.emg.core.tool.fatigue.MuscleFatigueTool
+import at.fhooe.mc.emg.core.tool.peaks.PeakDetectionTool
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -35,9 +42,12 @@ class EmgModule(private val app: EmgApp) {
     @Provides
     @Singleton
     fun provideEmgController(clients: List<@JvmSuppressWildcards EmgClientDriver>,
-                             tools: List<@JvmSuppressWildcards Tool>): AndroidEmgPresenter {
-        return AndroidEmgPresenter(app.applicationContext, clients, tools,
-                SharedPreferencesEmgConfigStorage(app.applicationContext), AppUtils.defaultWindowSize)
+                             tools: List<@JvmSuppressWildcards Tool>,
+                             filter: List<@JvmSuppressWildcards Filter>,
+                             analysisMethods: List<@JvmSuppressWildcards FrequencyAnalysisMethod>): AndroidEmgPresenter {
+        return AndroidEmgPresenter(app.applicationContext, clients, tools, filter,
+                analysisMethods, SharedPreferencesEmgConfigStorage(app.applicationContext),
+                AppUtils.defaultWindowSize)
     }
 
     @Provides
@@ -47,6 +57,7 @@ class EmgModule(private val app: EmgApp) {
         return arrayListOf(
                 SimulationClientDriver(AndroidSimulationClientDriverConfigView(), simulationFolder),
                 NetworkClientDriver(AndroidNetworkClientDriverConfigView()),
+                MqttClientDriver(AndroidMqttClientDriverConfigView()),
                 AndroidBluetoothClientDriver(app.applicationContext,
                         AndroidBluetoothClientDriverConfigView()))
     }
@@ -58,5 +69,23 @@ class EmgModule(private val app: EmgApp) {
                 PeakDetectionTool(AndroidPeakDetectionView()),
                 MuscleFatigueTool(AndroidMuscleFatigueView()))
     }
+
+    @Provides
+    @Singleton
+    fun provideFilter(): List<@JvmSuppressWildcards Filter> {
+        return listOf(NoFilter(),
+                LowPassFilter(),
+                BandStopFilter(),
+                RunningAverageFilter(),
+                ThresholdFilter())
+    }
+
+    @Provides
+    @Singleton
+    fun provideFrequencyAnalysisMethod(): List<@JvmSuppressWildcards FrequencyAnalysisMethod> {
+        return listOf(FftFrequencyAnalysisMethod(FrequencyAnalysisFragment()),
+                PowerSpectrumAnalysisMethod(FrequencyAnalysisFragment()))
+    }
+
 
 }

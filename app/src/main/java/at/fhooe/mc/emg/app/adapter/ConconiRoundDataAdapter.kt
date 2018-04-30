@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import at.fhooe.mc.emg.app.R
-import at.fhooe.mc.emg.core.tools.conconi.ConconiRoundData
+import at.fhooe.mc.emg.core.tool.conconi.ConconiRoundData
 import at.shockbytes.util.adapter.BaseAdapter
 import kotterknife.bindView
 

@@ -10,6 +10,7 @@ import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
 import at.fhooe.mc.emg.clientdriver.model.EmgData
 import at.fhooe.mc.emg.core.filter.Filter
+import at.fhooe.mc.emg.core.filter.NoFilter
 import at.fhooe.mc.emg.core.view.VisualView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
@@ -23,8 +24,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 
 
 /**
- * @author Martin Macheiner
- * Date: 28.11.2017.
+ * Author:  Martin Macheiner
+ * Date:    28.11.2017.
  */
 class AndroidVisualView(private val context: Context,
                         private val windowSize: Int) : VisualView<View> {
@@ -43,6 +44,8 @@ class AndroidVisualView(private val context: Context,
                 DoubleArray(0)
             }
         }
+
+    override var filter: List<Filter> = listOf(NoFilter())
 
     override val bufferSpan: Long = AppUtils.bufferSpan * 2
 
@@ -107,11 +110,10 @@ class AndroidVisualView(private val context: Context,
         chart.axisLeft.axisMaximum = maximum.toFloat()
     }
 
-    override fun update(data: EmgData, filters: List<Filter>) {
+    override fun update(data: EmgData) {
 
         for (i in 0 until data.channelCount) {
-            filters
-                    .filter { it.isEnabled }
+            filter
                     .forEach { filter ->
                         val supposedName = (i + 1).toString() + "." + filter.shortName
                         val set = getSetByName(supposedName)

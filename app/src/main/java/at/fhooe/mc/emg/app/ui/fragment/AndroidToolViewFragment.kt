@@ -3,8 +3,8 @@ package at.fhooe.mc.emg.app.ui.fragment
 import at.fhooe.mc.emg.app.R
 
 /**
- * @author Martin Macheiner
- * Date: 08.01.2018.
+ * Author:  Martin Macheiner
+ * Date:    08.01.2018.
  */
 
 abstract class AndroidToolViewFragment : BaseFragment() {

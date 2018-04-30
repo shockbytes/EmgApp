@@ -4,8 +4,8 @@ import at.fhooe.mc.emg.core.view.EmgView
 import at.fhooe.mc.emg.core.view.VisualView
 
 /**
- * @author Martin Macheiner
- * Date: 28.11.2017.
+ * Author:  Martin Macheiner
+ * Date:    28.11.2017.
  */
 interface AndroidEmgView<in T> : EmgView {
 
