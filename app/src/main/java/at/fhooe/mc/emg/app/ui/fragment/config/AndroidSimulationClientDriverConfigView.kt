@@ -9,7 +9,6 @@ import android.widget.CheckBox
 import android.widget.Spinner
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
-import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
 import at.fhooe.mc.emg.core.client.simulation.SimulationClientDriver
@@ -36,7 +35,7 @@ class AndroidSimulationClientDriverConfigView : AndroidConfigView(), EmgClientDr
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context)
                 .setTitle(name)
-                .setIcon(AppUtils.iconForClient(ClientCategory.SIMULATION))
+                .setIcon(AppUtils.iconForClient(EmgClientDriver.ClientCategory.SIMULATION))
                 .setView(buildView(R.layout.fragment_client_config_simulation))
                 .create()
     }

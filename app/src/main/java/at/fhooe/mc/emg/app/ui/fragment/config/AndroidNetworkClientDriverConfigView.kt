@@ -8,7 +8,6 @@ import android.widget.EditText
 import android.widget.Toast
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.util.AppUtils
-import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
 import at.fhooe.mc.emg.core.client.network.NetworkClientDriver
@@ -34,7 +33,7 @@ class AndroidNetworkClientDriverConfigView : AndroidConfigView(), EmgClientDrive
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context)
                 .setTitle(name)
-                .setIcon(AppUtils.iconForClient(ClientCategory.NETWORK))
+                .setIcon(AppUtils.iconForClient(EmgClientDriver.ClientCategory.NETWORK))
                 .setView(buildView(R.layout.fragment_client_config_network))
                 .create()
     }

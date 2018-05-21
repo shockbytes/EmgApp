@@ -1,4 +1,4 @@
-package at.fhooe.mc.emg.app.tools.peaks
+package at.fhooe.mc.emg.app.tool.peaks
 
 import android.graphics.Color
 import android.support.v4.content.ContextCompat

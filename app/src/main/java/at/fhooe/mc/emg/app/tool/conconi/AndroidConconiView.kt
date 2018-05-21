@@ -1,4 +1,4 @@
-package at.fhooe.mc.emg.app.tools.conconi
+package at.fhooe.mc.emg.app.tool.conconi
 
 import android.graphics.Color
 import android.support.v4.content.ContextCompat

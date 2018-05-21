@@ -19,8 +19,10 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 /**
@@ -112,6 +114,27 @@ class AndroidVisualView(private val context: Context,
 
     override fun update(data: EmgData) {
 
+        Completable.fromCallable {
+            (0 until data.channelCount)
+                    .flatMap { channelIdx ->
+                        filter.map { filter ->
+                            synchronized(this) {
+                                val supposedName = (channelIdx + 1).toString() + "." + filter.shortName
+                                val set = getSetByName(supposedName)
+                                val isNewlyCreated = set.entryCount == 0
+                                addToDataSet(set, data, channelIdx, filter)
+                                if (isNewlyCreated) {
+                                    chart.data.addDataSet(set)
+                                }
+                            }
+                        }
+                    }
+        }.subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe ({
+                    invalidateChart()
+        }, { throwable: Throwable -> println("${throwable.javaClass.name} ${throwable.message}") })
+
+        /*
         for (i in 0 until data.channelCount) {
             filter
                     .forEach { filter ->
@@ -124,7 +147,7 @@ class AndroidVisualView(private val context: Context,
                         }
                     }
         }
-        invalidateChart()
+        */
     }
 
     // ----------------------------------------------------------------------------------

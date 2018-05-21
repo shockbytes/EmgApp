@@ -1,4 +1,4 @@
-package at.fhooe.mc.emg.app.tools.fatigue
+package at.fhooe.mc.emg.app.tool.fatigue
 
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.ui.fragment.AndroidToolViewFragment

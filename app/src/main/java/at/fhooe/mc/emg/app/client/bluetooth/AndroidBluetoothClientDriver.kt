@@ -4,11 +4,11 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.Context
-import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
-import at.fhooe.mc.emg.messaging.EmgMessageParser
-import at.fhooe.mc.emg.messaging.MessageParser
+import at.fhooe.mc.emg.messaging.EmgMessageInterpreter
+import at.fhooe.mc.emg.messaging.MessageInterpreter
+
 import at.fhooe.mc.emg.messaging.model.EmgPacket
 import com.github.ivbaranov.rxbluetooth.BluetoothConnection
 import com.github.ivbaranov.rxbluetooth.RxBluetooth
@@ -33,7 +33,7 @@ class AndroidBluetoothClientDriver(context: Context,
     override val name: String
         get() = "Bluetooth device @ $deviceInfo"
 
-    override var msgParser: MessageParser<EmgPacket> = EmgMessageParser(MessageParser.ProtocolVersion.V1)
+    override var msgInterpreter: MessageInterpreter<EmgPacket> = EmgMessageInterpreter(MessageInterpreter.ProtocolVersion.V1)
 
     override val shortName: String = "Bluetooth"
 
@@ -77,7 +77,7 @@ class AndroidBluetoothClientDriver(context: Context,
     }
 
     override fun sendSamplingFrequencyToClient() {
-        connection?.send(msgParser.buildFrequencyMessage(samplingFrequency))
+        connection?.send(msgInterpreter.buildFrequencyMessage(samplingFrequency))
     }
 
     fun setBluetoothOptions(remoteMac: String, uuidString: String) {

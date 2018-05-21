@@ -3,9 +3,9 @@ package at.fhooe.mc.emg.app.dagger
 import at.fhooe.mc.emg.app.client.bluetooth.AndroidBluetoothClientDriver
 import at.fhooe.mc.emg.app.core.AndroidEmgPresenter
 import at.fhooe.mc.emg.app.core.EmgApp
-import at.fhooe.mc.emg.app.tools.conconi.AndroidConconiView
-import at.fhooe.mc.emg.app.tools.fatigue.AndroidMuscleFatigueView
-import at.fhooe.mc.emg.app.tools.peaks.AndroidPeakDetectionView
+import at.fhooe.mc.emg.app.tool.conconi.AndroidConconiView
+import at.fhooe.mc.emg.app.tool.fatigue.AndroidMuscleFatigueView
+import at.fhooe.mc.emg.app.tool.peaks.AndroidPeakDetectionView
 import at.fhooe.mc.emg.app.ui.fragment.FrequencyAnalysisFragment
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidBluetoothClientDriverConfigView
 import at.fhooe.mc.emg.app.ui.fragment.config.AndroidMqttClientDriverConfigView
@@ -54,7 +54,7 @@ class EmgModule(private val app: EmgApp) {
     @Singleton
     fun provideEmgClients(@Named("simulationFolder") simulationFolder: String)
             : List<@JvmSuppressWildcards EmgClientDriver> {
-        return arrayListOf(
+        return listOf(
                 SimulationClientDriver(AndroidSimulationClientDriverConfigView(), simulationFolder),
                 NetworkClientDriver(AndroidNetworkClientDriverConfigView()),
                 MqttClientDriver(AndroidMqttClientDriverConfigView()),
@@ -65,7 +65,7 @@ class EmgModule(private val app: EmgApp) {
     @Provides
     @Singleton
     fun provideTools(fileStorage: FileStorage): List<@JvmSuppressWildcards Tool> {
-        return arrayListOf(ConconiTool(AndroidConconiView(), fileStorage),
+        return listOf(ConconiTool(AndroidConconiView(), fileStorage),
                 PeakDetectionTool(AndroidPeakDetectionView()),
                 MuscleFatigueTool(AndroidMuscleFatigueView()))
     }

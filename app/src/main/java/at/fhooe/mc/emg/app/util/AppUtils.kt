@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.util.TypedValue
 import at.fhooe.mc.emg.app.R
-import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.core.analysis.FrequencyAnalysisMethod
 import at.fhooe.mc.emg.core.filter.Filter
@@ -37,14 +36,14 @@ object AppUtils {
                 context.resources.displayMetrics).toInt()
     }
 
-    fun iconForClient(category: ClientCategory): Int {
+    fun iconForClient(category: EmgClientDriver.ClientCategory): Int {
 
         return when (category) {
 
-            ClientCategory.SIMULATION -> R.drawable.ic_client_simulation
-            ClientCategory.NETWORK -> R.drawable.ic_client_network
-            ClientCategory.BLUETOOTH -> R.drawable.ic_client_bluetooth
-            ClientCategory.SERIAL -> 0 // Not supported in Android
+            EmgClientDriver.ClientCategory.SIMULATION -> R.drawable.ic_client_simulation
+            EmgClientDriver.ClientCategory.NETWORK -> R.drawable.ic_client_network
+            EmgClientDriver.ClientCategory.BLUETOOTH -> R.drawable.ic_client_bluetooth
+            EmgClientDriver.ClientCategory.SERIAL -> 0 // Not supported in Android
         }
     }
 

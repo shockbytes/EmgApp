@@ -9,7 +9,6 @@ import android.widget.Toast
 import at.fhooe.mc.emg.app.R
 import at.fhooe.mc.emg.app.client.bluetooth.AndroidBluetoothClientDriver
 import at.fhooe.mc.emg.app.util.AppUtils
-import at.fhooe.mc.emg.clientdriver.ClientCategory
 import at.fhooe.mc.emg.clientdriver.EmgClientDriver
 import at.fhooe.mc.emg.clientdriver.EmgClientDriverConfigView
 import at.fhooe.mc.emg.core.util.CoreUtils
@@ -35,7 +34,7 @@ class AndroidBluetoothClientDriverConfigView : AndroidConfigView(), EmgClientDri
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context)
                 .setTitle(name)
-                .setIcon(AppUtils.iconForClient(ClientCategory.BLUETOOTH))
+                .setIcon(AppUtils.iconForClient(EmgClientDriver.ClientCategory.BLUETOOTH))
                 .setView(buildView(R.layout.fragment_client_config_bluetooth))
                 .create()
     }
